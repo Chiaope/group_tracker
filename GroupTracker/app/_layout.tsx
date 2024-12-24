@@ -1,5 +1,5 @@
-import { Stack } from "expo-router";
+import MyDrawer from "./Drawer/_layout";
 
 export default function RootLayout() {
-  return <Stack />;
+  return <MyDrawer />;
 }
