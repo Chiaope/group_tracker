@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 import { Button } from '@react-navigation/elements';
 import { useNavigation } from "@react-navigation/native";
 
-export default function ExpensesPage() {
+export default function TodoPage() {
     const navigation = useNavigation<any>();
     
     return (
