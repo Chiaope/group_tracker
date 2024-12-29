@@ -15,7 +15,8 @@ export default function ExpensePage() {
                     style={{
                         flex: 1,
                         justifyContent: "center",
-                        alignItems: "center",
+                        alignItems: "stretch",
+                        margin: 5
                     }}>
                     <FlatList
                         data={allExpense.data}
