@@ -13,8 +13,8 @@ export default function Index() {
                     justifyContent: "center",
                     alignItems: "center",
                 }}>
-                <Button onPress={() => navigation.navigate('Todo')}>
-                    Go to To Do
+                <Button onPress={() => navigation.navigate('Expense')}>
+                    Go to Expense
                 </Button>
             </View>
         </>
