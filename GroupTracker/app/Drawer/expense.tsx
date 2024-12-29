@@ -1,22 +1,33 @@
-import { Text, View } from "react-native";
-import { Button } from '@react-navigation/elements';
-import { useNavigation } from "@react-navigation/native";
+import { FlatList, Text, View } from "react-native";
+import ExpenseListItem from "@/Components/ExpenseListItem";
+import { useGetAllExpense } from "../Services/ExpenseServices";
 
-export default function ExpensesPage() {
-    const navigation = useNavigation<any>();
-    
+export default function ExpensePage() {
+    const [loading, allExpense] = useGetAllExpense()
+    console.log("~~~~~ Expense Page ~~~~~")
+
     return (
         <>
-            <View
-                style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}>
-                <Button onPress={() => navigation.navigate('Home')}>
-                    Go to Home
-                </Button>
-            </View>
+            {loading ? <View>
+                <Text>Loading</Text>
+            </View> :
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}>
+                    <FlatList
+                        data={allExpense.data}
+                        renderItem={({ item }) => {
+                            return (<>
+                                <ExpenseListItem expenseData={item}>
+                                </ExpenseListItem>
+                            </>)
+                        }}
+                    />
+                </View>
+            }
         </>
 
     )
