@@ -13,7 +13,13 @@ export default function Expense() {
                 (
                     error ?
                         <Text>{error.message}</Text> :
-                        <ExpensePage expenseDataList={allExpense.data} />
+                        <View style={{ 
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: "center",
+                         }}>
+                            <ExpensePage expenseDataList={allExpense.data} />
+                         </View>
                 )
             }
         </>

@@ -16,7 +16,8 @@ export default function ExpensePage({expenseDataList}: ExpenseDataList) {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "stretch",
-                margin: 5
+                margin: 5,
+                maxWidth: 1000
             }}>
             <View style={{
                 flexDirection: "row",

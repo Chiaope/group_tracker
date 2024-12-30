@@ -32,9 +32,11 @@ export default function ExpenseListItem({ expenseData }: Props) {
         },
         baseButton: {
             padding: 10,
+            paddingHorizontal: 20,
             width: '100%',
-            backgroundColor: 'blue'
-
+            backgroundColor: 'blue',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
         },
         negativeButton: {
             backgroundColor: 'red'
@@ -44,7 +46,11 @@ export default function ExpenseListItem({ expenseData }: Props) {
         },
         buttonText: {
             textAlign: 'center',
+            paddingHorizontal: 10
         },
+        additionalDetails: {
+            backgroundColor: 'lightblue'
+        }
     });
 
     var StyledButton
@@ -59,20 +65,27 @@ export default function ExpenseListItem({ expenseData }: Props) {
         <View style={styles.container}>
             <TouchableOpacity onPress={onPress} style={styles.touchable}>
                 <View style={StyledButton}>
-                    <Text style={styles.buttonText}>{expenseData.title}</Text>
-                    {/* <Button title={expenseData.title || "No Title"} /> */}
-                    {
-                        collapse &&
-                        <>
-                            <Text>
-                                {expenseData.description || "No Descriptions"}
-                            </Text>
-                            <Text>
-                                {expenseData.amount_cents / 100 || "No amount data"}
-                            </Text>
-                        </>
-                    }
+                    <Text style={styles.buttonText}>
+                        {expenseData.title}
+                    </Text>
+                    <Text style={styles.buttonText}>
+                        ${expenseData.amount_cents / 100}
+                    </Text>
                 </View>
+                {
+                    collapse &&
+                    <View style={styles.additionalDetails}>
+                        <Text>
+                            Description: {expenseData.description || "No Descriptions"}
+                        </Text>
+                        <Text>
+                            Category: {expenseData.category || "No Category"}
+                        </Text>
+                        <Text>
+                            Created: {expenseData.created_at.toLocaleString() || "No Creation Date"}
+                        </Text>
+                    </View>
+                }
             </TouchableOpacity >
         </View>
     )
