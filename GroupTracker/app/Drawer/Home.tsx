@@ -2,7 +2,7 @@ import { Button } from "@react-navigation/elements";
 import { View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-export default function Index() {
+export default function Home() {
     const navigation = useNavigation<any>();
 
     return (

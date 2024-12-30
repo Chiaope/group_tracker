@@ -1,10 +1,9 @@
-import { Button, FlatList, Text, View } from "react-native";
-import ExpenseListItem from "@/Components/ExpenseListItem";
+import { Text, View } from "react-native";
 import { useGetAllExpense } from "../Services/ExpenseServices";
+import ExpensePage from "@/Components/ExpensePage";
 
-export default function ExpensePage() {
+export default function Expense() {
     const [loading, allExpense, error] = useGetAllExpense()
-    console.log("~~~~~ Expense Page ~~~~~")
 
     return (
         <>
@@ -12,31 +11,9 @@ export default function ExpensePage() {
                 <Text>Loading</Text>
             </View> :
                 (
-                    error ? <Text>{error.message}</Text> :
-                        <View
-                            style={{
-                                flex: 1,
-                                justifyContent: "center",
-                                alignItems: "stretch",
-                                margin: 5
-                            }}>
-                            <View style={{
-                                flexDirection: "row",
-                                gap: 5,
-                                width: "100%",
-                                justifyContent: "space-around",
-                                margin: 5
-                            }}>
-                                <Button title="Add" />
-                                <Button title="Minus" />
-                            </View>
-                            <FlatList ItemSeparatorComponent={() => <View style={{ marginBottom: 5 }} />}
-                                data={allExpense.data}
-                                renderItem={({ item }) => {
-                                    return <ExpenseListItem expenseData={item} />
-                                }}
-                            />
-                        </View>
+                    error ?
+                        <Text>{error.message}</Text> :
+                        <ExpensePage expenseDataList={allExpense.data} />
                 )
             }
         </>

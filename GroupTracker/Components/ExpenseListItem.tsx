@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
-interface ExpenseData {
-    expenseData: {
-        id: number,
-        created_at: Date,
-        amount_cents: number,
-        title: string,
-        category: string,
-        description: null | string
-    },
+interface Props {
+    expenseData: ExpenseData
 }
 
-export default function ExpenseListItem({ expenseData }: ExpenseData) {
+export interface ExpenseData {
+    id: number,
+    created_at: Date,
+    amount_cents: number,
+    title: string,
+    category: string,
+    description: null | string
+}
+
+export default function ExpenseListItem({ expenseData }: Props) {
     const [collapse, setCollapse] = useState<boolean>(false)
     console.log(expenseData)
 
