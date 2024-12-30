@@ -5,7 +5,7 @@ interface ExpenseDataList {
     expenseDataList: ExpenseData[]
 }
 
-export default function ExpensePage({expenseDataList}: ExpenseDataList) {
+export default function ExpensePage({ expenseDataList }: ExpenseDataList) {
     console.log("~~~~~ Expense Page ~~~~~")
     console.log(expenseDataList)
 
@@ -17,7 +17,7 @@ export default function ExpensePage({expenseDataList}: ExpenseDataList) {
                 justifyContent: "center",
                 alignItems: "stretch",
                 margin: 5,
-                maxWidth: 1000
+                maxWidth: 500
             }}>
             <View style={{
                 flexDirection: "row",
@@ -27,7 +27,7 @@ export default function ExpensePage({expenseDataList}: ExpenseDataList) {
                 margin: 5
             }}>
                 <Button title="Add" />
-                <Text>Total Spent: ${totalSpent/100}</Text>
+                <Text style={{ alignContent: 'center' }}>Total Spent: ${totalSpent / 100}</Text>
                 <Button title="Minus" />
             </View>
             <FlatList ItemSeparatorComponent={() => <View style={{ marginBottom: 5 }} />}

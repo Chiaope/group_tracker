@@ -7,7 +7,7 @@ interface Props {
 
 export interface ExpenseData {
     id: number,
-    created_at: Date,
+    created_at: string,
     amount_cents: number,
     title: string,
     category: string,
@@ -16,7 +16,6 @@ export interface ExpenseData {
 
 export default function ExpenseListItem({ expenseData }: Props) {
     const [collapse, setCollapse] = useState<boolean>(false)
-    console.log(expenseData)
 
     function onPress() {
         console.log('Pressed')
@@ -32,7 +31,7 @@ export default function ExpenseListItem({ expenseData }: Props) {
         },
         baseButton: {
             padding: 10,
-            paddingHorizontal: 20,
+            paddingHorizontal: 10,
             width: '100%',
             backgroundColor: 'blue',
             flexDirection: 'row',
@@ -82,7 +81,7 @@ export default function ExpenseListItem({ expenseData }: Props) {
                             Category: {expenseData.category || "No Category"}
                         </Text>
                         <Text>
-                            Created: {expenseData.created_at.toLocaleString() || "No Creation Date"}
+                            Created: {expenseData.created_at || "No Creation Date"}
                         </Text>
                     </View>
                 }
