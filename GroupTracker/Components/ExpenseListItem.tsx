@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
-interface Props {
+interface ExpenseData {
     expenseData: {
         id: number,
         created_at: Date,
@@ -12,18 +12,17 @@ interface Props {
     },
 }
 
-export default function ExpenseListItem({ expenseData, children }: React.PropsWithChildren<Props>) {
+export default function ExpenseListItem({ expenseData }: ExpenseData) {
     const [collapse, setCollapse] = useState<boolean>(false)
     console.log(expenseData)
 
     function onPress() {
-        console.log('Presseddd')
+        console.log('Pressed')
         setCollapse(!collapse)
     }
 
     const styles = StyleSheet.create({
         container: {
-            margin: 5,
             alignItems: 'center',
         },
         touchable: {
@@ -33,7 +32,7 @@ export default function ExpenseListItem({ expenseData, children }: React.PropsWi
             padding: 10,
             width: '100%',
             backgroundColor: 'blue'
-            
+
         },
         negativeButton: {
             backgroundColor: 'red'
@@ -63,16 +62,14 @@ export default function ExpenseListItem({ expenseData, children }: React.PropsWi
                     {
                         collapse &&
                         <>
-                        <Text>
-                            {expenseData.description || "No Descriptions"}
-                        </Text>
-                        <Text>
-                            {expenseData.amount_cents/100 || "No amount data"}
-                        </Text>
+                            <Text>
+                                {expenseData.description || "No Descriptions"}
+                            </Text>
+                            <Text>
+                                {expenseData.amount_cents / 100 || "No amount data"}
+                            </Text>
                         </>
                     }
-
-                    {children}
                 </View>
             </TouchableOpacity >
         </View>

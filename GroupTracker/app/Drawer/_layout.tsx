@@ -1,7 +1,7 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 // import TodoPage from './todo';
-import Index from '.';
-import ExpensePage from './expense';
+import Index from './Index';
+import ExpensePage from './Expense';
 
 const Drawer = createDrawerNavigator();
 
