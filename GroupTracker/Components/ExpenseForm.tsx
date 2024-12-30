@@ -19,11 +19,9 @@ export default function App() {
         formState: { errors },
     } = useForm<ExpenseData>({})
     const [open, setOpen] = useState(false)
-    // const [value, setValue] = useState(null)
     const [items, setItems] = useState(categoryList)
 
     const onSubmit = (data: any) => console.log(data)
-
 
     return (
         <View style={{
@@ -47,7 +45,6 @@ export default function App() {
                 name="amount_cents"
             />
             {errors.amount_cents && <Text>This is required.</Text>}
-
 
             <Controller
                 control={control}
@@ -104,8 +101,6 @@ export default function App() {
                 )}
                 name="description"
             />
-
-
             <Button title="Submit" onPress={handleSubmit(onSubmit)} />
         </View>
     )
