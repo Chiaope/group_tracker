@@ -8,6 +8,7 @@ interface Props {
 export interface ExpenseData {
     id: number,
     created_at: string,
+    created_by: string,
     amount_cents: number,
     title: string,
     category: string,
@@ -75,10 +76,13 @@ export default function ExpenseListItem({ expenseData }: Props) {
                     collapse &&
                     <View style={styles.additionalDetails}>
                         <Text>
-                            Created: {expenseData.created_at || "No Creation Date"}
+                            Created by: {expenseData.created_by}
                         </Text>
                         <Text>
-                            Category: {expenseData.category || "No Category"}
+                            Created: {expenseData.created_at}
+                        </Text>
+                        <Text>
+                            Category: {expenseData.category}
                         </Text>
                         <Text>
                             Description: {expenseData.description || "No Descriptions"}
