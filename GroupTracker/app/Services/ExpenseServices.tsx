@@ -10,7 +10,7 @@ function useGetAllExpense() {
     const getAllExpense = useCallback(async function () {
         console.log('Get all expense')
         try {
-            const allExpense = await supabase.from('expense_item_t').select()
+            const allExpense = await supabase.from('expense_item_t').select().order('created_at', { ascending: false })
             if (allExpense.error) {
                 throw allExpense.error
             }

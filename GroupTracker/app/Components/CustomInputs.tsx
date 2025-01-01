@@ -15,7 +15,7 @@ export function CustomNumberInput(props: any, id:any) {
                 borderColor: color
             }}
             {...props}
-            value={props.value ? props.value.replace(/[^0-9]/g, '') : undefined}
+            value={props.value}
             keyboardType="numeric"
         />
     )

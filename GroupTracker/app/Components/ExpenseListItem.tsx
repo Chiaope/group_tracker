@@ -75,13 +75,13 @@ export default function ExpenseListItem({ expenseData }: Props) {
                     collapse &&
                     <View style={styles.additionalDetails}>
                         <Text>
-                            Description: {expenseData.description || "No Descriptions"}
+                            Created: {expenseData.created_at || "No Creation Date"}
                         </Text>
                         <Text>
                             Category: {expenseData.category || "No Category"}
                         </Text>
                         <Text>
-                            Created: {expenseData.created_at || "No Creation Date"}
+                            Description: {expenseData.description || "No Descriptions"}
                         </Text>
                     </View>
                 }
