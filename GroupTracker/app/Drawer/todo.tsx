@@ -1,5 +1,5 @@
 import { FlatList, Text, View, StyleSheet } from "react-native";
-import ToDoListItem from "@/Components/ToDoListItem";
+import ToDoListItem from "@/app/Components/ToDoListItem";
 
 export default function TodoPage() {
     return (

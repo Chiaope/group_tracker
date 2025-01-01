@@ -1,28 +1,16 @@
 import { Text, View } from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useGetAllExpense } from "../Services/ExpenseServices";
-import ExpensePage from "@/Components/ExpensePage";
+import ExpensePage from "@/app/Components/ExpensePage";
+import ExpenseForm from "@/app/Components/ExpenseForm";
+
+const Stack = createNativeStackNavigator();
 
 export default function Expense() {
-    const [loading, allExpense, error] = useGetAllExpense()
-
     return (
-        <>
-            {loading ? <View>
-                <Text>Loading</Text>
-            </View> :
-                (
-                    error ?
-                        <Text>{error.message}</Text> :
-                        <View style={{ 
-                            flex: 1,
-                            flexDirection: 'row',
-                            justifyContent: "center",
-                         }}>
-                            <ExpensePage expenseDataList={allExpense.data} />
-                         </View>
-                )
-            }
-        </>
-
+        <Stack.Navigator>
+            <Stack.Screen name="Expense" component={ExpensePage} />
+            <Stack.Screen name="Expense Form" component={ExpenseForm} />
+        </Stack.Navigator>
     )
 }

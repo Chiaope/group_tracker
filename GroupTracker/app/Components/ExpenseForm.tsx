@@ -1,50 +1,81 @@
-import { Text, View, TextInput, Button } from "react-native"
+import { Text, View, TextInput, Button, Alert } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { ExpenseData } from "./ExpenseListItem"
 import DropDownPicker from "react-native-dropdown-picker"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useAddExpense } from "@/app/Services/ExpenseServices"
+import { CustomNumberInput, CustomTextInput, CustomDropDown } from "./CustomInputs"
 
 
 const categoryList = [
-    { label: 'Label Food', value: 'food' },
-    { label: 'Label House', value: 'house' },
-    { label: 'Label Health', value: 'health' }
+    { label: 'Food', value: 'food' },
+    { label: 'House', value: 'house' },
+    { label: 'Health', value: 'health' },
+    { label: 'Eating Out', value: 'eat_out' },
+    { label: 'Entertainment', value: 'entertainment' },
+    { label: 'Vehicle', value: 'vehicle' },
+    { label: 'Transport', value: 'transport' },
 ]
 
 
-export default function App() {
+export default function ExpenseForm() {
     const {
         control,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm<ExpenseData>({})
     const [open, setOpen] = useState(false)
-    const [items, setItems] = useState(categoryList)
+    const [addExpense, loading, inserted, error] = useAddExpense()
+    const [resetKey, setResetKey] = useState(0)
 
-    const onSubmit = (data: any) => console.log(data)
+    function resetFields() {
+        setResetKey(resetKey + 1)
+        console.log(resetKey)
+        reset()
+    }
+
+    function onSubmit(data: ExpenseData) {
+        data = { ...data, amount_cents: data.amount_cents * 100 }
+        console.log('submit')
+        console.log(data)
+        addExpense(data)
+    }
 
     return (
         <View style={{
-            width: '80%',
-            maxWidth: 800
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: "center",
         }}>
+            <View style={{
+            width: '80%',
+            maxWidth: 800,
+            alignItems: 'stretch',
+            rowGap: 5
+        }}>{inserted && <View>Inserted</View>}
             <Controller
                 control={control}
                 rules={{
                     required: true,
+                    validate: {
+                        isNum: (v: any) => {
+                            return !isNaN(parseInt(v))
+                        }
+                    },
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
+                    <CustomNumberInput
+                        key={resetKey}
                         placeholder="Amount"
                         onBlur={onBlur}
                         onChangeText={onChange}
-                        value={value ? value.toString() : undefined}
-                        keyboardType="numeric"
+                        value={value}
+                        error={errors.amount_cents}
                     />
                 )}
                 name="amount_cents"
             />
-            {errors.amount_cents && <Text>This is required.</Text>}
 
             <Controller
                 control={control}
@@ -52,16 +83,17 @@ export default function App() {
                     required: true,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
+                    <CustomTextInput
+                        key={resetKey}
                         placeholder="Title"
                         onBlur={onBlur}
                         onChangeText={onChange}
                         value={value}
+                        error={errors.title}
                     />
                 )}
                 name="title"
             />
-            {errors.title && <Text>This is required.</Text>}
 
             <Controller
                 control={control}
@@ -69,30 +101,30 @@ export default function App() {
                     required: true,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => {
-                    console.log(value)
                     return (
                         // @ts-ignore
-                        <DropDownPicker
+                        <CustomDropDown
                             placeholder="Category"
                             value={value}
                             searchable={true}
-                            items={items}
+                            items={categoryList}
                             open={open}
                             setOpen={setOpen}
-                            onSelectItem={(value) => {
+                            onSelectItem={(value: { value: any }) => {
                                 onChange(value.value)
                             }}
+                            error={errors.category}
                         />
                     )
                 }}
                 name="category"
             />
-            {errors.category && <Text>This is required.</Text>}
 
             <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
+                    <CustomTextInput
+                        key={resetKey}
                         placeholder="Description"
                         onBlur={onBlur}
                         onChangeText={onChange}
@@ -102,6 +134,7 @@ export default function App() {
                 name="description"
             />
             <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+        </View>
         </View>
     )
 }
