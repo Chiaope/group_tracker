@@ -1,4 +1,4 @@
-import { View, Button } from "react-native"
+import { View, Button, Text } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { ExpenseData } from "./ExpenseListItem"
 import { useState } from "react"
@@ -31,12 +31,6 @@ export default function ExpenseForm() {
 
     const navigation = useNavigation<any>();
 
-    // function resetFields() {
-    //     setResetKey(resetKey + 1)
-    //     console.log(resetKey)
-    //     reset()
-    // }
-
     function onSubmit(data: ExpenseData) {
         data = { ...data, amount_cents: data.amount_cents * 100 }
         console.log('submit')
@@ -56,7 +50,8 @@ export default function ExpenseForm() {
                 maxWidth: 800,
                 alignItems: 'stretch',
                 rowGap: 5
-            }}>{inserted && <View>Inserted</View>}
+            }}>
+                <Text>Amount</Text>
                 <Controller
                     control={control}
                     rules={{
@@ -65,8 +60,6 @@ export default function ExpenseForm() {
                             isNum: (v: any) => {
                                 let regString = /^\s*-?[1-9]\d*(\.\d{1,2})?\s*$/
                                 let reg = new RegExp(regString)
-                                // return !isNaN(parseInt(v))
-                                console.log(reg.test(v))
                                 return reg.test(v)
                             }
                         },
@@ -84,6 +77,7 @@ export default function ExpenseForm() {
                     name="amount_cents"
                 />
 
+                <Text>Title</Text>
                 <Controller
                     control={control}
                     rules={{
@@ -102,6 +96,7 @@ export default function ExpenseForm() {
                     name="title"
                 />
 
+                <Text>Category</Text>
                 <Controller
                     control={control}
                     rules={{
@@ -126,6 +121,7 @@ export default function ExpenseForm() {
                     name="category"
                 />
 
+                <Text>Description</Text>
                 <Controller
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (

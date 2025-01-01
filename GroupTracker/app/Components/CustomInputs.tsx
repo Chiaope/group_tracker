@@ -1,19 +1,17 @@
 import { TextInput } from "react-native"
 import DropDownPicker from "react-native-dropdown-picker"
 
-export function CustomNumberInput(props: any, id:any) {
+export function CustomNumberInput(props: any) {
     let color = props.error ? 'red' : 'black'
-    console.log('this is key')
-    console.log(props.id)
     return (
         <TextInput
-            key={id}
             style={{
                 padding: 10,
                 borderWidth: 1,
                 margin: 1,
                 borderColor: color
             }}
+            placeholderTextColor={'black'}
             {...props}
             value={props.value}
             keyboardType="numeric"
@@ -29,8 +27,9 @@ export function CustomTextInput(props: any) {
                 padding: 10,
                 borderWidth: 1,
                 margin: 1,
-                borderColor: color
+                borderColor: color,
             }}
+            placeholderTextColor={'black'}
             {...props}
         />
     )
