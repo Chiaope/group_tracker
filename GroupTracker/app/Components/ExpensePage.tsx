@@ -1,7 +1,8 @@
-import { Button, FlatList, View, Text, Modal, TouchableWithoutFeedback, StyleSheet } from "react-native"
+import { Button, FlatList, View, Text, Modal, TouchableWithoutFeedback, StyleSheet, RefreshControl } from "react-native"
 import ExpenseListItem, { ExpenseData } from "./ExpenseListItem"
 import { useGetAllExpense } from "@/app/Services/ExpenseServices"
 import { useNavigation } from "@react-navigation/native"
+import { useCallback, useState } from "react"
 
 interface ExpenseDataList {
     expenseDataList: ExpenseData[]
@@ -9,10 +10,16 @@ interface ExpenseDataList {
 
 export default function ExpensePage() {
     console.log("~~~~~ Expense Page ~~~~~")
-
-    const [getAllExpense, loading, expenseDataList, error] = useGetAllExpense()
+    const [refreshing, setRefreshing] = useState(false);
+    const [getAllExpense, loading, expenseDataList, error] = useGetAllExpense(refreshing)
     console.log('All Expense')
     console.log(expenseDataList)
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        getAllExpense()
+    }, []);
+
     const navigation = useNavigation<any>();
 
     function addButtonPressed() {
@@ -52,11 +59,13 @@ export default function ExpensePage() {
                                     <Text style={{ alignContent: 'center' }}>Total Spent: ${totalSpent / 100}</Text>
                                     <Button title="Add" onPress={addButtonPressed} />
                                 </View>
-                                <FlatList ItemSeparatorComponent={() => <View style={{ marginBottom: 5 }} />}
+                                <FlatList
+                                    ItemSeparatorComponent={() => <View style={{ marginBottom: 5 }} />}
                                     data={expenseDataList}
                                     renderItem={({ item }) => {
                                         return <ExpenseListItem expenseData={item} />
                                     }}
+                                    refreshControl={<RefreshControl refreshing={loading} onRefresh={onRefresh} />}
                                 />
                             </View>
                         </View>

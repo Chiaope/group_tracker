@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { supabase } from "../Utils/supabase";
 import { ExpenseData } from "@/app/Components/ExpenseListItem";
 
-function useGetAllExpense() {
+function useGetAllExpense({ refresh }: any) {
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<any>(null)
     const [allExpense, setAllExpense] = useState<ExpenseData[]>([])
@@ -22,7 +22,7 @@ function useGetAllExpense() {
         } finally {
             setLoading(false)
         }
-    }, [])
+    }, [refresh])
     useEffect(() => {
         getAllExpense()
     }, [])
