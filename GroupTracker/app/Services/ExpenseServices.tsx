@@ -4,6 +4,7 @@ import { ExpenseData } from "@/app/Components/ExpenseListItem";
 
 const expenseTable = process.env.EXPO_PUBLIC_EXPENSE_TABLE_KEY || ""
 
+
 function useGetAllExpense() {
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<any>(null)
