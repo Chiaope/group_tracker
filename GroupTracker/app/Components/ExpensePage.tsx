@@ -1,24 +1,75 @@
-import { Button, FlatList, View, Text, Modal, TouchableWithoutFeedback, StyleSheet, RefreshControl } from "react-native"
-import ExpenseListItem, { ExpenseData } from "./ExpenseListItem"
-import { useGetAllExpense } from "@/app/Services/ExpenseServices"
+import { Button, FlatList, View, Text, RefreshControl } from "react-native"
+import ExpenseListItem from "./ExpenseListItem"
+import { useDeleteExpense, useGetAllExpense } from "@/app/Services/ExpenseServices"
 import { useNavigation } from "@react-navigation/native"
-import { useCallback, useState } from "react"
-
-interface ExpenseDataList {
-    expenseDataList: ExpenseData[]
-}
+import { useCallback, useEffect } from "react"
+import { Toast, ToastDescription, ToastTitle, useToast } from "@/components/ui/toast"
 
 export default function ExpensePage() {
     console.log("~~~~~ Expense Page ~~~~~")
-    const [refreshing, setRefreshing] = useState(false);
-    const [getAllExpense, loading, expenseDataList, error] = useGetAllExpense(refreshing)
+    const getAllExpenseService = useGetAllExpense()
+    const deleteExpenseService = useDeleteExpense()
+    const toast = useToast()
+
     console.log('All Expense')
-    console.log(expenseDataList)
+    console.log(getAllExpenseService.allExpense)
+    console.log('top deleted??')
+    console.log(deleteExpenseService.deleted)
+
+    useEffect(() => {
+        getAllExpenseService.getAllExpense()
+        console.log('running use effect')
+    }, [deleteExpenseService.deleted])
+
+
+    useEffect(() => {
+        if (!deleteExpenseService.loading) {
+            console.log('loading')
+            console.log()
+            if (deleteExpenseService.error) {
+                console.log(deleteExpenseService.error)
+                showNewToast("error", "Failed to delete expense.")
+            } else {
+                if (deleteExpenseService.deleted) {
+                    console.log('Deleted successfully')
+                    showNewToast("success", "Successfully deleted expense.")
+                    navigation.goBack()
+                }
+            }
+        }
+    }, [deleteExpenseService.loading, deleteExpenseService.deleted, deleteExpenseService.error])
+
+    function showNewToast(action: any, message: string) {
+        const newId = Math.random().toString()
+        toast.show({
+            id: newId,
+            placement: "top",
+            duration: 3000,
+            render: ({ id }) => {
+                const uniqueToastId = "toast-" + id
+                return (
+                    <Toast nativeID={uniqueToastId} action={action} variant="solid">
+                        <ToastTitle>Status:</ToastTitle>
+                        <ToastDescription>
+                            {message}
+                        </ToastDescription>
+                    </Toast>
+                )
+            },
+        })
+    }
 
     const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        getAllExpense()
+        getAllExpenseService.getAllExpense()
     }, []);
+
+
+    const deleteFunction = useCallback(async (id: number) => {
+        console.log('deleted??')
+        console.log(deleteExpenseService.deleted)
+        const deleteResponse = await deleteExpenseService.deleteExpense(id)
+    }, []);
+
 
     const navigation = useNavigation<any>();
 
@@ -27,21 +78,21 @@ export default function ExpensePage() {
         navigation.navigate('Expense Form')
     }
 
-    let totalSpent = expenseDataList.reduce((accumulator, current) => accumulator + current.amount_cents, 0)
+    let totalSpent = getAllExpenseService.allExpense.reduce((accumulator, current) => accumulator + current.amount_cents, 0)
 
-    if (error) {
+    if (getAllExpenseService.error) {
         console.log('Error getting all expense:')
-        console.log(error)
+        console.log(getAllExpenseService.error)
     }
 
     return (
         <>
-            {loading ? <View>
+            {getAllExpenseService.loading ? <View>
                 <Text>Loading</Text>
             </View> :
                 (
-                    error ?
-                        <Text>{error.error.message}</Text> :
+                    getAllExpenseService.error ?
+                        <Text>{getAllExpenseService.error.error.message}</Text> :
                         <View style={{
                             flex: 1,
                             flexDirection: 'row',
@@ -67,11 +118,11 @@ export default function ExpensePage() {
                                 </View>
                                 <FlatList
                                     ItemSeparatorComponent={() => <View style={{ marginBottom: 5 }} />}
-                                    data={expenseDataList}
+                                    data={getAllExpenseService.allExpense}
                                     renderItem={({ item }) => {
-                                        return <ExpenseListItem expenseData={item} />
+                                        return <ExpenseListItem expenseData={item} deleteFunction={deleteFunction} />
                                     }}
-                                    refreshControl={<RefreshControl refreshing={loading} onRefresh={onRefresh} />}
+                                    refreshControl={<RefreshControl refreshing={getAllExpenseService.loading || deleteExpenseService.loading} onRefresh={onRefresh} />}
                                 />
                             </View>
                         </View>

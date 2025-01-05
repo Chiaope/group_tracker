@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Button } from "react-native";
 
 interface Props {
     expenseData: ExpenseData
+    deleteFunction: any
 }
 
 export interface ExpenseData {
@@ -15,12 +16,16 @@ export interface ExpenseData {
     description: null | string
 }
 
-export default function ExpenseListItem({ expenseData }: Props) {
+export default function ExpenseListItem({expenseData, deleteFunction}: Props) {
     const [collapse, setCollapse] = useState<boolean>(false)
 
-    function onPress() {
-        console.log('Pressed')
+    function onExpensePress() {
+        console.log('Expense Pressed')
         setCollapse(!collapse)
+    }
+
+    function onDeletePressed(id: number) {
+        deleteFunction(id)
     }
 
     const styles = StyleSheet.create({
@@ -63,7 +68,7 @@ export default function ExpenseListItem({ expenseData }: Props) {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={onPress} style={styles.touchable}>
+            <TouchableOpacity onPress={onExpensePress} style={styles.touchable}>
                 <View style={StyledButton}>
                     <Text style={styles.buttonText}>
                         {expenseData.title}
@@ -87,6 +92,7 @@ export default function ExpenseListItem({ expenseData }: Props) {
                         <Text>
                             Description: {expenseData.description || "No Descriptions"}
                         </Text>
+                        <Button title="Delete" onPress={() => {onDeletePressed(expenseData.id)}}/>
                     </View>
                 }
             </TouchableOpacity >

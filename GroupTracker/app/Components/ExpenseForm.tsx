@@ -26,14 +26,11 @@ export default function ExpenseForm() {
         formState: { errors },
     } = useForm<ExpenseData>({})
     const [open, setOpen] = useState(false)
-    const [addExpense, loading, inserted, error] = useAddExpense()
+    const addExpenseService = useAddExpense()
     const toast = useToast()
-    const [toastId, setToastId] = useState<string>('0')
-
 
     function showNewToast(action: any, message: string) {
         const newId = Math.random().toString()
-        setToastId(newId)
         toast.show({
             id: newId,
             placement: "top",
@@ -42,7 +39,7 @@ export default function ExpenseForm() {
                 const uniqueToastId = "toast-" + id
                 return (
                     <Toast nativeID={uniqueToastId} action={action} variant="solid">
-                        <ToastTitle>Hello!</ToastTitle>
+                        <ToastTitle>Status:</ToastTitle>
                         <ToastDescription>
                             {message}
                         </ToastDescription>
@@ -51,30 +48,31 @@ export default function ExpenseForm() {
             },
         })
     }
+
     const navigation = useNavigation<any>();
 
     useEffect(() => {
-        if (!loading) {
+        if (!addExpenseService.loading) {
             console.log('loading')
             console.log()
-            if (error) {
-                console.log(error)
+            if (addExpenseService.error) {
+                console.log(addExpenseService.error)
                 showNewToast("error", "Failed to insert expense.")
             } else {
-                if (inserted) {
+                if (addExpenseService.inserted) {
                     console.log('Inserted successfully')
                     showNewToast("success", "Successfully inserted expense.")
                     navigation.goBack()
                 }
             }
         }
-    }, [loading, inserted, error])
+    }, [addExpenseService.loading, addExpenseService.inserted, addExpenseService.error])
 
     function onSubmit(data: ExpenseData) {
         data = { ...data, amount_cents: data.amount_cents * 100 }
         console.log('submit')
         console.log(data)
-        addExpense(data)
+        addExpenseService.addExpense(data)
     }
 
     return (
@@ -171,7 +169,7 @@ export default function ExpenseForm() {
                     )}
                     name="description"
                 />
-                <Button title="Submit" onPress={handleSubmit(onSubmit)} disabled={loading} />
+                <Button title="Submit" onPress={handleSubmit(onSubmit)} disabled={addExpenseService.loading} />
             </View>
         </View>
     )

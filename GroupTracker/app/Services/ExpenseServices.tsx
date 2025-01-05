@@ -4,7 +4,7 @@ import { ExpenseData } from "@/app/Components/ExpenseListItem";
 
 const expenseTable = process.env.EXPO_PUBLIC_EXPENSE_TABLE_KEY || ""
 
-function useGetAllExpense({ refresh }: any) {
+function useGetAllExpense() {
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<any>(null)
     const [allExpense, setAllExpense] = useState<ExpenseData[]>([])
@@ -29,14 +29,12 @@ function useGetAllExpense({ refresh }: any) {
                 throw allExpenseResponse.error
             }
             setAllExpense(allExpenseResponse.data)
-        } catch (error: any) {} finally {
+        } catch (error: any) { } finally {
             setLoading(false)
         }
-    }, [refresh])
-    useEffect(() => {
-        getAllExpense()
     }, [])
-    return [getAllExpense, loading, allExpense, error] as const
+
+    return {getAllExpense, loading, allExpense, error} as const
 }
 
 function useAddExpense() {
@@ -48,6 +46,7 @@ function useAddExpense() {
         console.log('Add expense')
         console.log(expenseData)
         try {
+            setInserted(false)
             setLoading(true)
             const addExpenseResponse = await supabase
                 .from(expenseTable)
@@ -70,11 +69,51 @@ function useAddExpense() {
             } else {
                 setInserted(true)
             }
-        } catch (error: any) {} finally {
+        } catch (error: any) { } finally {
             setLoading(false)
         }
     }, [])
-    return [addExpense, loading, inserted, error] as const
+    return {addExpense, loading, inserted, error} as const
 }
 
-export { useGetAllExpense, useAddExpense }
+function useDeleteExpense() {
+    const [loading, setLoading] = useState<any>(false)
+    const [deleted, setDeleted] = useState(false)
+    const [error, setError] = useState<any>(null)
+
+    const deleteExpense = useCallback(async function (id: number) {
+        console.log('Delete expense id:')
+        console.log(id)
+        try {
+            setDeleted(false)
+            setLoading(true)
+            const deleteExpenseResponse = await supabase
+                .from(expenseTable)
+                .delete()
+                .eq('id', id)
+            setLoading(false)
+            console.log(deleteExpenseResponse.data)
+            if (deleteExpenseResponse.error) {
+                console.log('Delete expense error:')
+                console.log(deleteExpenseResponse.error.message)
+                console.log(deleteExpenseResponse.status)
+                console.log(deleteExpenseResponse.statusText)
+                setError(
+                    {
+                        "error": deleteExpenseResponse.error,
+                        "status": deleteExpenseResponse.status,
+                        "statusText": deleteExpenseResponse.statusText
+                    }
+                )
+                throw deleteExpenseResponse.error
+            } else {
+                setDeleted(true)
+            }
+        } catch (error: any) { } finally {
+            setLoading(false)
+        }
+    }, [])
+    return {deleteExpense, loading, deleted, error} as const
+}
+
+export { useGetAllExpense, useAddExpense, useDeleteExpense }

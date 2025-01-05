@@ -1,6 +1,4 @@
-import { Text, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useGetAllExpense } from "../Services/ExpenseServices";
 import ExpensePage from "@/app/Components/ExpensePage";
 import ExpenseForm from "@/app/Components/ExpenseForm";
 
