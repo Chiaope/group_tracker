@@ -13,8 +13,6 @@ export default function ExpensePage() {
 
     console.log('All Expense')
     console.log(getAllExpenseService.allExpense)
-    console.log('top deleted??')
-    console.log(deleteExpenseService.deleted)
 
     useEffect(() => {
         getAllExpenseService.getAllExpense()
@@ -24,8 +22,7 @@ export default function ExpensePage() {
 
     useEffect(() => {
         if (!deleteExpenseService.loading) {
-            console.log('loading')
-            console.log()
+            console.log('Delete loading')
             if (deleteExpenseService.error) {
                 console.log(deleteExpenseService.error)
                 showNewToast("error", "Failed to delete expense.")
@@ -33,7 +30,6 @@ export default function ExpensePage() {
                 if (deleteExpenseService.deleted) {
                     console.log('Deleted successfully')
                     showNewToast("success", "Successfully deleted expense.")
-                    navigation.goBack()
                 }
             }
         }
@@ -65,8 +61,6 @@ export default function ExpensePage() {
 
 
     const deleteFunction = useCallback(async (id: number) => {
-        console.log('deleted??')
-        console.log(deleteExpenseService.deleted)
         const deleteResponse = await deleteExpenseService.deleteExpense(id)
     }, []);
 
