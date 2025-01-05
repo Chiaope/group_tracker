@@ -69,7 +69,7 @@ export default function ExpenseListItem({ expenseData }: Props) {
                         {expenseData.title}
                     </Text>
                     <Text style={styles.buttonText}>
-                        ${expenseData.amount_cents / 100}
+                        ${(expenseData.amount_cents / 100).toFixed(2)}
                     </Text>
                 </View>
                 {

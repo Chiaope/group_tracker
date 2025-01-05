@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { useAddExpense } from "@/app/Services/ExpenseServices"
 import { CustomNumberInput, CustomTextInput, CustomDropDown } from "./CustomInputs"
 import { useNavigation } from "@react-navigation/native"
+import { useToast, Toast, ToastTitle, ToastDescription } from '@/components/ui/toast';
 
 
 const categoryList = [
@@ -22,22 +23,47 @@ export default function ExpenseForm() {
     const {
         control,
         handleSubmit,
-        reset,
         formState: { errors },
     } = useForm<ExpenseData>({})
     const [open, setOpen] = useState(false)
     const [addExpense, loading, inserted, error] = useAddExpense()
-    const [resetKey, setResetKey] = useState(0)
+    const toast = useToast()
+    const [toastId, setToastId] = useState<string>('0')
 
+
+    function showNewToast(action: any, message: string) {
+        const newId = Math.random().toString()
+        setToastId(newId)
+        toast.show({
+            id: newId,
+            placement: "top",
+            duration: 3000,
+            render: ({ id }) => {
+                const uniqueToastId = "toast-" + id
+                return (
+                    <Toast nativeID={uniqueToastId} action={action} variant="solid">
+                        <ToastTitle>Hello!</ToastTitle>
+                        <ToastDescription>
+                            {message}
+                        </ToastDescription>
+                    </Toast>
+                )
+            },
+        })
+    }
     const navigation = useNavigation<any>();
 
     useEffect(() => {
         if (!loading) {
-            if (inserted) {
-                if (error) {
-                    console.log(error)
-                } else {
+            console.log('loading')
+            console.log()
+            if (error) {
+                console.log(error)
+                showNewToast("error", "Failed to insert expense.")
+            } else {
+                if (inserted) {
                     console.log('Inserted successfully')
+                    showNewToast("success", "Successfully inserted expense.")
                     navigation.goBack()
                 }
             }
@@ -72,13 +98,13 @@ export default function ExpenseForm() {
                             isNum: (v: any) => {
                                 let regString = /^\s*-?[0-9]\d*(\.\d{1,2})?\s*$/
                                 let reg = new RegExp(regString)
-                                return reg.test(v) && parseFloat(v) > 0
+                                console.log(v)
+                                return reg.test(v) && Math.round(parseFloat(v) * 100) / 100 > 0
                             }
                         },
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                         <CustomNumberInput
-                            key={resetKey}
                             placeholder="Amount"
                             onBlur={onBlur}
                             onChangeText={onChange}
@@ -97,7 +123,6 @@ export default function ExpenseForm() {
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                         <CustomTextInput
-                            key={resetKey}
                             placeholder="Title"
                             onBlur={onBlur}
                             onChangeText={onChange}
@@ -138,7 +163,6 @@ export default function ExpenseForm() {
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
                         <CustomTextInput
-                            key={resetKey}
                             placeholder="Description"
                             onBlur={onBlur}
                             onChangeText={onChange}
@@ -147,7 +171,7 @@ export default function ExpenseForm() {
                     )}
                     name="description"
                 />
-                <Button title="Submit" onPress={handleSubmit(onSubmit)} disabled={loading}/>
+                <Button title="Submit" onPress={handleSubmit(onSubmit)} disabled={loading} />
             </View>
         </View>
     )
