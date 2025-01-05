@@ -28,6 +28,12 @@ export default function ExpensePage() {
     }
 
     let totalSpent = expenseDataList.reduce((accumulator, current) => accumulator + current.amount_cents, 0)
+
+    if (error) {
+        console.log('Error getting all expense:')
+        console.log(error)
+    }
+
     return (
         <>
             {loading ? <View>
@@ -35,7 +41,7 @@ export default function ExpensePage() {
             </View> :
                 (
                     error ?
-                        <Text>{error.message}</Text> :
+                        <Text>{error.error.message}</Text> :
                         <View style={{
                             flex: 1,
                             flexDirection: 'row',

@@ -1,7 +1,7 @@
 import { View, Button, Text } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { ExpenseData } from "./ExpenseListItem"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useAddExpense } from "@/app/Services/ExpenseServices"
 import { CustomNumberInput, CustomTextInput, CustomDropDown } from "./CustomInputs"
 import { useNavigation } from "@react-navigation/native"
@@ -31,12 +31,24 @@ export default function ExpenseForm() {
 
     const navigation = useNavigation<any>();
 
+    useEffect(() => {
+        if (!loading) {
+            if (inserted) {
+                if (error) {
+                    console.log(error)
+                } else {
+                    console.log('Inserted successfully')
+                    navigation.goBack()
+                }
+            }
+        }
+    }, [loading, inserted, error])
+
     function onSubmit(data: ExpenseData) {
         data = { ...data, amount_cents: data.amount_cents * 100 }
         console.log('submit')
         console.log(data)
         addExpense(data)
-        navigation.goBack()
     }
 
     return (
@@ -58,9 +70,9 @@ export default function ExpenseForm() {
                         required: true,
                         validate: {
                             isNum: (v: any) => {
-                                let regString = /^\s*-?[1-9]\d*(\.\d{1,2})?\s*$/
+                                let regString = /^\s*-?[0-9]\d*(\.\d{1,2})?\s*$/
                                 let reg = new RegExp(regString)
-                                return reg.test(v)
+                                return reg.test(v) && parseFloat(v) > 0
                             }
                         },
                     }}
@@ -135,7 +147,7 @@ export default function ExpenseForm() {
                     )}
                     name="description"
                 />
-                <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+                <Button title="Submit" onPress={handleSubmit(onSubmit)} disabled={loading}/>
             </View>
         </View>
     )
