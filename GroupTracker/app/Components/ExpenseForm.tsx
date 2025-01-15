@@ -166,8 +166,14 @@ export default function ExpenseForm() {
                     )}
                     name="description"
                 />
-                <Button title="Submit" onPress={handleSubmit(onSubmit)} disabled={addExpenseService.loading} />
-                <Button title="Cancel" onPress={onCancel} color="red"/>
+                <View style={{ flexDirection: 'row', gap: 15, marginTop: 20 }}>
+                    <View style={{ flex: 1 }}>
+                        <Button title="Cancel" onPress={onCancel} color="red" />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <Button title="Submit" onPress={handleSubmit(onSubmit)} disabled={addExpenseService.loading} />
+                    </View>
+                </View>
             </View>
         </View>
     )
