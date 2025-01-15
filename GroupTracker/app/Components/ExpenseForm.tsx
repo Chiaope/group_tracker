@@ -92,14 +92,6 @@ export default function ExpenseForm() {
                     control={control}
                     rules={{
                         required: true,
-                        validate: {
-                            isNum: (v: any) => {
-                                let regString = /^\s*-?[0-9]\d*(\.\d{1,2})?\s*$/
-                                let reg = new RegExp(regString)
-                                console.log(v)
-                                return reg.test(v) && Math.round(parseFloat(v) * 100) / 100 > 0
-                            }
-                        },
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                         <CustomNumberInput

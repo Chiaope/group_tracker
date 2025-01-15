@@ -1,4 +1,4 @@
-import { TextInput } from "react-native"
+import { Keyboard, TextInput } from "react-native"
 import DropDownPicker from "react-native-dropdown-picker"
 
 export function CustomNumberInput(props: any) {
@@ -43,6 +43,7 @@ export function CustomDropDown(props: any) {
                 borderColor: color,
                 backgroundColor: 'transparent'
             }}
+            onPress={Keyboard.dismiss}
             {...props}
         />
     )

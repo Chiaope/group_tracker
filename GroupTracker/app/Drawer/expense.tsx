@@ -6,7 +6,9 @@ const Stack = createNativeStackNavigator();
 
 export default function Expense() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{
+            headerShown: false
+          }}>
             <Stack.Screen name="Expense" component={ExpensePage} />
             <Stack.Screen name="Expense Form" component={ExpenseForm} />
         </Stack.Navigator>
