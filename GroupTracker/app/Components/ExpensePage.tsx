@@ -1,23 +1,31 @@
-import { Button, FlatList, View, Text, RefreshControl } from "react-native"
+import { Button, FlatList, View, Text, RefreshControl, TouchableOpacity } from "react-native"
 import ExpenseListItem from "./ExpenseListItem"
 import { useDeleteExpense, useGetAllExpense } from "@/app/Services/ExpenseServices"
 import { useNavigation } from "@react-navigation/native"
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Toast, ToastDescription, ToastTitle, useToast } from "@/components/ui/toast"
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function ExpensePage() {
     console.log("~~~~~ Expense Page ~~~~~")
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date())
     const getAllExpenseService = useGetAllExpense()
     const deleteExpenseService = useDeleteExpense()
     const toast = useToast()
+
+    const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "short" };
+    let formattedDate = new Intl.DateTimeFormat('en-US', options).format(selectedDate);
 
     console.log('All Expense')
     console.log(getAllExpenseService.allExpense)
 
     useEffect(() => {
-        getAllExpenseService.getAllExpense()
+        let refDate = new Date(selectedDate)
+        let startDate = new Date(refDate.setDate(1))
+        let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth()+1, 0))
+        getAllExpenseService.getAllExpense(startDate, endDate)
         console.log('running use effect')
-    }, [deleteExpenseService.deleted])
+    }, [deleteExpenseService.deleted, selectedDate])
 
 
     useEffect(() => {
@@ -72,6 +80,16 @@ export default function ExpensePage() {
         navigation.navigate('Expense Form')
     }
 
+    function prevMonthPressed() {
+        const updatedDate = new Date(selectedDate.setMonth(selectedDate.getMonth() - 1))
+        setSelectedDate(updatedDate)
+    }
+
+    function nextMonthPressed() {
+        const updatedDate = new Date(selectedDate.setMonth(selectedDate.getMonth() + 1))
+        setSelectedDate(updatedDate)
+    }
+
     let totalSpent = getAllExpenseService.allExpense.reduce((accumulator, current) => accumulator + current.amount_cents, 0)
 
     if (getAllExpenseService.error) {
@@ -107,8 +125,15 @@ export default function ExpensePage() {
                                     justifyContent: "space-between",
                                     padding: 10
                                 }}>
-                                    <Text style={{ alignContent: 'center' }}>Total Spent: ${totalSpent / 100}</Text>
-                                    <Button title="Add" onPress={addButtonPressed} />
+                                    <Text style={{ alignContent: 'center', flex: 1 }}>Spent: ${totalSpent / 100}</Text>
+                                    <View style={{ justifyContent: 'space-between', alignItems: 'center', flex: 1, flexDirection: "row", gap: 10 }}>
+                                        <TouchableOpacity onPress={prevMonthPressed}><Icon name='caret-left' size={20} /></TouchableOpacity>
+                                        <Text >{formattedDate}</Text>
+                                        <TouchableOpacity onPress={nextMonthPressed}><Icon name='caret-right' size={20} /></TouchableOpacity>
+                                    </View>
+                                    <View style={{ alignContent: 'center', flex: 1, alignItems: "flex-end" }}>
+                                        <Button title="Add" onPress={addButtonPressed} />
+                                    </View>
                                 </View>
                                 <FlatList
                                     ItemSeparatorComponent={() => <View style={{ marginBottom: 5 }} />}

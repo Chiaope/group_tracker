@@ -75,11 +75,16 @@ export default function ExpenseForm() {
         addExpenseService.addExpense(data)
     }
 
+    function onCancel() {
+        navigation.goBack()
+    }
+
     return (
         <View style={{
             flex: 1,
             flexDirection: 'row',
             justifyContent: "center",
+            alignItems: "center"
         }}>
             <View style={{
                 width: '80%',
@@ -162,6 +167,7 @@ export default function ExpenseForm() {
                     name="description"
                 />
                 <Button title="Submit" onPress={handleSubmit(onSubmit)} disabled={addExpenseService.loading} />
+                <Button title="Cancel" onPress={onCancel} color="red"/>
             </View>
         </View>
     )

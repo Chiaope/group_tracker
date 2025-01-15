@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { supabase } from "../Utils/supabase";
 import { ExpenseData } from "@/app/Components/ExpenseListItem";
 
@@ -10,11 +10,21 @@ function useGetAllExpense() {
     const [error, setError] = useState<any>(null)
     const [allExpense, setAllExpense] = useState<ExpenseData[]>([])
 
-    const getAllExpense = useCallback(async function () {
+    const getAllExpense = useCallback(async function (startDate:undefined|Date=undefined, endDate:undefined|Date=undefined) {
         console.log('Get all expense')
         try {
             setLoading(true)
-            const allExpenseResponse = await supabase.from(expenseTable).select().order('created_at', { ascending: false })
+            let allExpenseResponse
+            if (typeof startDate != 'undefined' && typeof endDate != 'undefined') {
+                let startDateStr = startDate.toISOString().split('T')[0]
+                let endDateStr = endDate.toISOString().split('T')[0]
+                console.log("date str info")
+                console.log(startDateStr)
+                console.log(endDateStr)
+                allExpenseResponse = await supabase.from(expenseTable).select().order('created_at', { ascending: false }).gte('created_at', startDateStr).lte('created_at', endDateStr)
+            } else {
+                allExpenseResponse = await supabase.from(expenseTable).select().order('created_at', { ascending: false })
+            }
             if (allExpenseResponse.error) {
                 console.log('Add expense error:')
                 console.log(allExpenseResponse.error.message)
