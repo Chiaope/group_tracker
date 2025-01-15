@@ -125,13 +125,13 @@ export default function ExpensePage() {
                                     justifyContent: "space-between",
                                     padding: 10
                                 }}>
-                                    <Text style={{ alignContent: 'center', flex: 1 }}>Spent: ${totalSpent / 100}</Text>
-                                    <View style={{ justifyContent: 'space-between', alignItems: 'center', flex: 1, flexDirection: "row", gap: 10 }}>
-                                        <TouchableOpacity onPress={prevMonthPressed}><Icon name='caret-left' size={20} /></TouchableOpacity>
+                                    <Text style={{ flex: 1, textAlignVertical: 'center' }}>${totalSpent / 100}</Text>
+                                    <View style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center', flexDirection: "row", gap: 10 }}>
+                                        <TouchableOpacity onPress={prevMonthPressed}><Icon name='caret-left' size={25} /></TouchableOpacity>
                                         <Text >{formattedDate}</Text>
-                                        <TouchableOpacity onPress={nextMonthPressed}><Icon name='caret-right' size={20} /></TouchableOpacity>
+                                        <TouchableOpacity onPress={nextMonthPressed}><Icon name='caret-right' size={25} /></TouchableOpacity>
                                     </View>
-                                    <View style={{ alignContent: 'center', flex: 1, alignItems: "flex-end" }}>
+                                    <View style={{ flex: 1, alignContent: 'center', alignItems: "flex-end" }}>
                                         <Button title="Add" onPress={addButtonPressed} />
                                     </View>
                                 </View>
