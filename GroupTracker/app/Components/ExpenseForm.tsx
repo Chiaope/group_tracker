@@ -84,7 +84,7 @@ export default function ExpenseForm() {
             flex: 1,
             flexDirection: 'row',
             justifyContent: "center",
-            alignItems: "center"
+            padding: 10
         }}>
             <View style={{
                 width: '80%',
