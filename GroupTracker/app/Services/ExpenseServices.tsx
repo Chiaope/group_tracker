@@ -23,7 +23,7 @@ function useGetAllExpense() {
                 console.log("date str info")
                 console.log(startDateStr)
                 console.log(endDateStr)
-                allExpenseResponse = await supabase.from(expenseTable).select().order('created_at', { ascending: false }).gte('created_at', startDateStr).lte('created_at', endDateStr)
+                allExpenseResponse = await supabase.from(expenseTable).select().order('created_at', { ascending: false }).gte('created_at', startDateStr).lt('created_at', endDateStr)
             } else {
                 allExpenseResponse = await supabase.from(expenseTable).select().order('created_at', { ascending: false })
             }

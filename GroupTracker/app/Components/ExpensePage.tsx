@@ -22,7 +22,7 @@ export default function ExpensePage() {
     useEffect(() => {
         let refDate = new Date(selectedDate)
         let startDate = new Date(refDate.setDate(1))
-        let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth()+1, 0))
+        let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth()+1, 1))
         getAllExpenseService.getAllExpense(startDate, endDate)
         console.log('running use effect')
     }, [deleteExpenseService.deleted, selectedDate])
