@@ -16,6 +16,7 @@ const categoryList = [
     { label: 'Entertainment', value: 'entertainment' },
     { label: 'Vehicle', value: 'vehicle' },
     { label: 'Transport', value: 'transport' },
+    { label: 'Education', value: 'education' },
 ]
 
 
@@ -69,7 +70,7 @@ export default function ExpenseForm() {
     }, [addExpenseService.loading, addExpenseService.inserted, addExpenseService.error])
 
     function onSubmit(data: ExpenseData) {
-        data = { ...data, amount_cents: data.amount_cents * 100 }
+        data = { ...data, amount_cents: Math.round(data.amount_cents * 100) }
         console.log('submit')
         console.log(data)
         addExpenseService.addExpense(data)
@@ -97,6 +98,11 @@ export default function ExpenseForm() {
                     control={control}
                     rules={{
                         required: true,
+                        validate: (value) => {
+                            console.log("value")
+                            console.log(value)
+                            return /^\s*-?[0-9]\d*(\.\d{1,2})?\s*$/.test(String(value))
+                        }
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                         <CustomNumberInput

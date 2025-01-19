@@ -14,6 +14,8 @@ function useGetAllExpense() {
         console.log('Get all expense')
         try {
             setLoading(true)
+            setError(null)
+            setAllExpense([])
             let allExpenseResponse
             if (typeof startDate != 'undefined' && typeof endDate != 'undefined') {
                 let startDateStr = startDate.toISOString().split('T')[0]
@@ -59,6 +61,7 @@ function useAddExpense() {
         try {
             setInserted(false)
             setLoading(true)
+            setError(null)
             const addExpenseResponse = await supabase
                 .from(expenseTable)
                 .insert({ ...expenseData, group: 1 })
