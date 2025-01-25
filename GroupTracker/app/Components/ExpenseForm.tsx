@@ -100,7 +100,7 @@ export default function ExpenseForm() {
         if (expenseTaskFocused == 'schedule') {
             data.end_date = generateDateFromMonthYearString(data.end_date).toISOString().split('T')[0]
             data.description = undefined
-            scheduleExpenseService.scheduleExpense(data, '* * * * *')
+            scheduleExpenseService.scheduleExpense(data, '0 0 1 * *')
         } else if (expenseTaskFocused == 'normal') {
             data.end_date = undefined
             addExpenseService.addExpense(data)
