@@ -16,9 +16,6 @@ export default function ExpensePage() {
     const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "short" };
     let formattedDate = new Intl.DateTimeFormat('en-US', options).format(selectedDate);
 
-    console.log('All Expense')
-    console.log(getAllExpenseService.allExpense)
-
     useEffect(() => {
         let refDate = new Date(selectedDate)
         let startDate = new Date(refDate.setDate(1))
@@ -64,7 +61,10 @@ export default function ExpensePage() {
     }
 
     const onRefresh = useCallback(() => {
-        getAllExpenseService.getAllExpense()
+        let refDate = new Date()
+        let startDate = new Date(refDate.setDate(1))
+        let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth()+1, 1))
+        getAllExpenseService.getAllExpense(startDate, endDate)
     }, []);
 
 

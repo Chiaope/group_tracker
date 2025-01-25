@@ -11,9 +11,11 @@ export interface ExpenseData {
     created_at: string,
     created_by: string,
     amount_cents: number,
+    group: number,
     title: string,
     category: string,
-    description: null | string
+    description: undefined | string,
+    end_date: undefined | string
 }
 
 export default function ExpenseListItem({expenseData, deleteFunction}: Props) {

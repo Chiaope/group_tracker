@@ -9,7 +9,7 @@ export default function Expense() {
         <Stack.Navigator screenOptions={{
             headerShown: false
           }}>
-            <Stack.Screen name="Expense" component={ExpensePage} />
+            <Stack.Screen name="Expense Page" component={ExpensePage} />
             <Stack.Screen name="Expense Form" component={ExpenseForm} />
         </Stack.Navigator>
     )

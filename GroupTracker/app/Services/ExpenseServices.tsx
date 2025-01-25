@@ -2,7 +2,10 @@ import { useCallback, useState } from "react"
 import { supabase } from "../Utils/supabase";
 import { ExpenseData } from "@/app/Components/ExpenseListItem";
 
-const expenseTable = process.env.EXPO_PUBLIC_EXPENSE_TABLE_KEY || ""
+const getAllExpenseSQLFunction = 'get_all_expense'
+const insertExpenseSQLFunction = 'insert_expense'
+const deleteExpenseSQLFunction = 'delete_expense'
+const scheduleExpenseSQLFunction = 'schedule_expense'
 
 
 function useGetAllExpense() {
@@ -10,7 +13,7 @@ function useGetAllExpense() {
     const [error, setError] = useState<any>(null)
     const [allExpense, setAllExpense] = useState<ExpenseData[]>([])
 
-    const getAllExpense = useCallback(async function (startDate:undefined|Date=undefined, endDate:undefined|Date=undefined) {
+    const getAllExpense = useCallback(async function (startDate: undefined | Date = undefined, endDate: undefined | Date = undefined) {
         console.log('Get all expense')
         try {
             setLoading(true)
@@ -23,9 +26,10 @@ function useGetAllExpense() {
                 console.log("date str info")
                 console.log(startDateStr)
                 console.log(endDateStr)
-                allExpenseResponse = await supabase.from(expenseTable).select().order('created_at', { ascending: false }).gte('created_at', startDateStr).lt('created_at', endDateStr)
+                allExpenseResponse = await supabase.rpc(getAllExpenseSQLFunction, { 'start_date': startDateStr, 'end_date': endDateStr })
             } else {
-                allExpenseResponse = await supabase.from(expenseTable).select().order('created_at', { ascending: false })
+                console.log(getAllExpenseSQLFunction)
+                allExpenseResponse = await supabase.rpc(getAllExpenseSQLFunction)
             }
             if (allExpenseResponse.error) {
                 console.log('Add expense error:')
@@ -47,7 +51,7 @@ function useGetAllExpense() {
         }
     }, [])
 
-    return {getAllExpense, loading, allExpense, error} as const
+    return { getAllExpense, loading, allExpense, error } as const
 }
 
 function useAddExpense() {
@@ -62,10 +66,15 @@ function useAddExpense() {
             setInserted(false)
             setLoading(true)
             setError(null)
-            const addExpenseResponse = await supabase
-                .from(expenseTable)
-                .insert({ ...expenseData, group: 1 })
-                .select()
+            let insertData = {
+                'amount_cents_input': expenseData.amount_cents,
+                'title_input': expenseData.title,
+                'category_input': expenseData.category,
+                'group_input': 1,
+                'created_by_input': 'ME',
+                'description_input': expenseData.description
+            }
+            const addExpenseResponse = await supabase.rpc(insertExpenseSQLFunction, insertData)
             console.log(addExpenseResponse.data)
             if (addExpenseResponse.error) {
                 console.log('Add expense error:')
@@ -87,7 +96,7 @@ function useAddExpense() {
             setLoading(false)
         }
     }, [])
-    return {addExpense, loading, inserted, error} as const
+    return { addExpense, loading, inserted, error } as const
 }
 
 function useDeleteExpense() {
@@ -101,11 +110,7 @@ function useDeleteExpense() {
         try {
             setDeleted(false)
             setLoading(true)
-            const deleteExpenseResponse = await supabase
-                .from(expenseTable)
-                .delete()
-                .eq('id', id)
-            setLoading(false)
+            const deleteExpenseResponse = await supabase.rpc(deleteExpenseSQLFunction, { 'expense_id': id })
             console.log(deleteExpenseResponse.data)
             if (deleteExpenseResponse.error) {
                 console.log('Delete expense error:')
@@ -127,7 +132,55 @@ function useDeleteExpense() {
             setLoading(false)
         }
     }, [])
-    return {deleteExpense, loading, deleted, error} as const
+    return { deleteExpense, loading, deleted, error } as const
 }
 
-export { useGetAllExpense, useAddExpense, useDeleteExpense }
+
+function useScheduleExpense() {
+    const [loading, setLoading] = useState<any>(false)
+    const [scheduled, setScheduled] = useState(false)
+    const [error, setError] = useState<any>(null)
+
+    const scheduleExpense = useCallback(async function (expenseData: ExpenseData, cron_input: string) {
+        console.log('Schedule Expense')
+        console.log(expenseData)
+        console.log(cron_input)
+        try {
+            setScheduled(false)
+            setLoading(true)
+            setError(null)
+            let scheduletData = {
+                'cron_input': cron_input,
+                'amount_cents_input': expenseData.amount_cents,
+                'title_input': expenseData.title,
+                'category_input': expenseData.category,
+                'group_input': 1,
+                'created_by_input': 'ME',
+                'end_date_input': expenseData.end_date
+            }
+            const scheduleExpenseResponse = await supabase.rpc(scheduleExpenseSQLFunction, scheduletData)
+            console.log(scheduleExpenseResponse.data)
+            if (scheduleExpenseResponse.error) {
+                console.log('Schedule expense error:')
+                console.log(scheduleExpenseResponse.error.message)
+                console.log(scheduleExpenseResponse.status)
+                console.log(scheduleExpenseResponse.statusText)
+                setError(
+                    {
+                        "error": scheduleExpenseResponse.error,
+                        "status": scheduleExpenseResponse.status,
+                        "statusText": scheduleExpenseResponse.statusText
+                    }
+                )
+                throw scheduleExpenseResponse.error
+            } else {
+                setScheduled(true)
+            }
+        } catch (error: any) { } finally {
+            setLoading(false)
+        }
+    }, [])
+    return { scheduleExpense, loading, scheduled, error } as const
+}
+
+export { useGetAllExpense, useAddExpense, useDeleteExpense, useScheduleExpense }
