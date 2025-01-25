@@ -86,7 +86,7 @@ export default function ExpenseForm() {
             } else {
                 if (scheduleExpenseService.scheduled) {
                     console.log('Scheduled successfully')
-                    showNewToast("success", "Successfully scheduled expense.")
+                    selectedDate && showNewToast("success", `Expense will be added on every 3rd of the month until last payment on ${selectedDate.toISOString().split('T')[0]}.`)
                     navigation.goBack()
                 }
             }
@@ -100,7 +100,7 @@ export default function ExpenseForm() {
         if (expenseTaskFocused == 'schedule') {
             data.end_date = generateDateFromMonthYearString(data.end_date).toISOString().split('T')[0]
             data.description = undefined
-            scheduleExpenseService.scheduleExpense(data, '0 0 1 * *')
+            scheduleExpenseService.scheduleExpense(data, '0 0 3 * *')
         } else if (expenseTaskFocused == 'normal') {
             data.end_date = undefined
             addExpenseService.addExpense(data)
