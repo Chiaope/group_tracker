@@ -103,6 +103,9 @@ export default function ExpenseForm() {
                     alignItems: 'stretch',
                     rowGap: 5
                 }}>
+                    <View style={{alignItems: 'center', padding: 10, backgroundColor: 'lightblue', borderRadius: 10}}>
+                        <Text style={{textAlign: 'center', fontSize: 20}}>Immediate Expense</Text>
+                    </View>
                     <View>
                         <Text>Amount</Text>
                         <Controller
