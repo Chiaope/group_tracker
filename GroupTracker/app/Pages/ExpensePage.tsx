@@ -1,5 +1,5 @@
 import { Button, FlatList, View, Text, RefreshControl, TouchableOpacity } from "react-native"
-import ExpenseListItem from "./ExpenseListItem"
+import ExpenseListItem from "../Components/ExpenseListItem"
 import { useDeleteExpense, useGetAllExpense } from "@/app/Services/ExpenseServices"
 import { useNavigation } from "@react-navigation/native"
 import { useCallback, useEffect, useState } from "react"

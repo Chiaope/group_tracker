@@ -2,10 +2,30 @@ import { useCallback, useState } from "react"
 import { supabase } from "../Utils/supabase";
 import { ExpenseData } from "@/app/Components/ExpenseListItem";
 
-const getAllExpenseSQLFunction = 'get_all_expense'
-const insertExpenseSQLFunction = 'insert_expense'
-const deleteExpenseSQLFunction = 'delete_expense'
-const scheduleExpenseSQLFunction = 'schedule_expense'
+
+const env = process.env.EXPO_PUBLIC_ENV || ""
+
+let getAllExpenseSQLFunction: any
+let insertExpenseSQLFunction: any
+let deleteExpenseSQLFunction: any
+let getAllScheduledExpenseSQLFunction: any
+let scheduleExpenseSQLFunction: any
+
+if (env == 'local') {
+    getAllExpenseSQLFunction = 'get_all_test_expense'
+    insertExpenseSQLFunction = 'fake_insert_expense'
+    deleteExpenseSQLFunction = 'fake_delete_expense'
+    getAllScheduledExpenseSQLFunction = 'get_all_scheduled_test_expense'
+    scheduleExpenseSQLFunction = 'fake_schedule_expense'
+} else {
+    getAllExpenseSQLFunction = 'get_all_expense'
+    insertExpenseSQLFunction = 'insert_expense'
+    deleteExpenseSQLFunction = 'delete_expense'
+    getAllScheduledExpenseSQLFunction = 'get_all_scheduled_expense'
+    scheduleExpenseSQLFunction = 'schedule_expense'
+}
+
+
 
 
 function useGetAllExpense() {

@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ExpensePage from "@/app/Components/ExpensePage";
-import ExpenseForm from "@/app/Components/ExpenseForm";
+import ExpensePage from "@/app/Pages/ExpensePage";
+import ExpenseForm from "@/app/Pages/ExpenseForm";
 
 const Stack = createNativeStackNavigator();
 
