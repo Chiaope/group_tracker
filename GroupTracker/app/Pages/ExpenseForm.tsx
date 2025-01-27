@@ -1,8 +1,8 @@
 import { View, Text, TouchableOpacity } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { ExpenseData } from "../Components/ExpenseListItem"
-import { useEffect, useRef, useState } from "react"
-import { useAddExpense, useScheduleExpense } from "@/app/Services/ExpenseServices"
+import { useEffect, useState } from "react"
+import { useAddExpense } from "@/app/Services/ExpenseServices"
 import { CustomNumberInput, CustomTextInput, CustomDropDown } from "../Components/CustomInputs"
 import { useNavigation } from "@react-navigation/native"
 import { useToast, Toast, ToastTitle, ToastDescription } from '@/components/ui/toast'
