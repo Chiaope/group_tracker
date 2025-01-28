@@ -1,40 +1,27 @@
 import { View, Text, TouchableOpacity } from "react-native"
 import { useForm, Controller } from "react-hook-form"
-import { ExpenseData } from "../Components/ExpenseListItem"
-import { useEffect, useRef, useState } from "react"
-import { useAddExpense, useScheduleExpense } from "@/app/Services/ExpenseServices"
+import { useEffect, useState } from "react"
+import { categoryList, useScheduleExpense } from "@/app/Services/ExpenseServices"
 import { CustomNumberInput, CustomTextInput, CustomDropDown } from "../Components/CustomInputs"
 import { useNavigation } from "@react-navigation/native"
 import { useToast, Toast, ToastTitle, ToastDescription } from '@/components/ui/toast'
+import { ScheduledExpenseData } from "../Components/ScheduledExpenseListItem"
 
-const categoryList = [
-    { label: 'Food', value: 'food' },
-    { label: 'House', value: 'house' },
-    { label: 'Health', value: 'health' },
-    { label: 'Eating Out', value: 'eat_out' },
-    { label: 'Entertainment', value: 'entertainment' },
-    { label: 'Vehicle', value: 'vehicle' },
-    { label: 'Transport', value: 'transport' },
-    { label: 'Education', value: 'education' },
-]
-
-function generateDateFromMonthYearString(monthYearString:any, separator:string='-') {
+function generateDateFromMonthYearString(monthYearString: any, separator: string = '-') {
     let splittedMonthYear = monthYearString.split(separator)
     let month = Number(splittedMonthYear[0])
     let year = Number(splittedMonthYear[1])
-    return new Date(Date.UTC(year, month-1, 1))
+    return new Date(Date.UTC(year, month - 1, 1))
 }
 
 
-export default function ExpenseForm() {
+export default function ScheduleExpenseForm() {
     const {
         control,
         handleSubmit,
         formState: { errors },
-    } = useForm<ExpenseData>({})
+    } = useForm<ScheduledExpenseData>({})
     const [open, setOpen] = useState(false)
-    const [expenseTaskFocused, setExpenseTaskFocused] = useState('normal')
-    const addExpenseService = useAddExpense()
     const scheduleExpenseService = useScheduleExpense()
     const toast = useToast()
     const [selectedDate, setSelectedDate] = useState<null | Date>()
@@ -62,22 +49,6 @@ export default function ExpenseForm() {
     const navigation = useNavigation<any>();
 
     useEffect(() => {
-        if (!addExpenseService.loading) {
-            console.log('loading')
-            if (addExpenseService.error) {
-                console.log(addExpenseService.error)
-                showNewToast("error", "Failed to insert expense.")
-            } else {
-                if (addExpenseService.inserted) {
-                    console.log('Inserted successfully')
-                    showNewToast("success", "Successfully inserted expense.")
-                    navigation.goBack()
-                }
-            }
-        }
-    }, [addExpenseService.loading, addExpenseService.inserted, addExpenseService.error])
-
-    useEffect(() => {
         if (!scheduleExpenseService.loading) {
             console.log('loading')
             if (scheduleExpenseService.error) {
@@ -93,18 +64,12 @@ export default function ExpenseForm() {
         }
     }, [scheduleExpenseService.loading, scheduleExpenseService.scheduled, scheduleExpenseService.error])
 
-    function onSubmit(data: ExpenseData) {
+    function onSubmit(data: ScheduledExpenseData) {
         data = { ...data, amount_cents: Math.round(data.amount_cents * 100) }
         console.log('submit')
         console.log(data)
-        if (expenseTaskFocused == 'schedule') {
-            data.end_date = generateDateFromMonthYearString(data.end_date).toISOString().split('T')[0]
-            data.description = undefined
-            scheduleExpenseService.scheduleExpense(data, '0 0 3 * *')
-        } else if (expenseTaskFocused == 'normal') {
-            data.end_date = undefined
-            addExpenseService.addExpense(data)
-        }
+        data.end_date = generateDateFromMonthYearString(data.end_date).toISOString().split('T')[0]
+        scheduleExpenseService.scheduleExpense(data, '0 0 3 * *')
     }
 
     function onCancel() {
@@ -115,34 +80,6 @@ export default function ExpenseForm() {
         <View style={{
             flex: 1,
         }}>
-            <View style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                gap: 15, 
-                marginTop: 20,
-                alignItems: 'stretch'
-            }}>
-                <TouchableOpacity
-                    onPress={() => { setExpenseTaskFocused('normal') }}
-                    style={{
-                        backgroundColor: expenseTaskFocused == 'normal' ? 'lightblue' : 'lightgrey',
-                        padding: 10,
-                        borderRadius: 10
-                    }}
-                >
-                    <Text style={{textAlign: 'center'}}>NORMAL EXPENSE</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => { setExpenseTaskFocused('schedule') }}
-                    style={{
-                        backgroundColor: expenseTaskFocused == 'schedule' ? 'lightblue' : 'lightgrey',
-                        padding: 10,
-                        borderRadius: 10
-                    }}
-                >
-                    <Text style={{textAlign: 'center'}}>MONTHLY EXPENSE</Text>
-                </TouchableOpacity>
-            </View>
             <View style={{
                 flex: 1,
                 flexDirection: 'row',
@@ -155,6 +92,9 @@ export default function ExpenseForm() {
                     alignItems: 'stretch',
                     rowGap: 5
                 }}>
+                    <View style={{ alignItems: 'center', padding: 10, backgroundColor: 'lightblue', borderRadius: 10 }}>
+                        <Text style={{ textAlign: 'center', fontSize: 20 }}>Schedule Expense</Text>
+                    </View>
                     <View>
                         <Text>Amount</Text>
                         <Controller
@@ -224,28 +164,7 @@ export default function ExpenseForm() {
                             name="category"
                         />
                     </View>
-                    <View>
-                        {
-                            expenseTaskFocused == 'normal' &&
-                            <View>
-                                <Text>Description</Text>
-                                <Controller
-                                    control={control}
-                                    render={({ field: { onChange, onBlur, value } }) => (
-                                        <CustomTextInput
-                                            placeholder="Description"
-                                            onBlur={onBlur}
-                                            onChangeText={onChange}
-                                            value={value || undefined}
-                                        />
-                                    )}
-                                    name="description"
-                                />
-                            </View>
-                        }
-                        {
-                            expenseTaskFocused == 'schedule' &&
-                            <View style={{ gap: 15 }}>
+                    <View style={{ gap: 15 }}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <View>
                                         <Text>Last Payment Month-Year</Text>
@@ -259,7 +178,7 @@ export default function ExpenseForm() {
                                                     if (value) {
                                                         let today = new Date()
                                                         let newDate = generateDateFromMonthYearString(value)
-                                                        
+
                                                         // @ts-ignore
                                                         if (!isNaN(newDate)) {
                                                             if (newDate <= today) {
@@ -289,8 +208,6 @@ export default function ExpenseForm() {
                                 </View>
                                 {selectedDate && <Text>Will add expense on every 1st of the month, until last payment on {selectedDate.toISOString().split('T')[0]}</Text>}
                             </View>
-                        }
-                    </View>
                     <View style={{ flexDirection: 'row', gap: 15, marginTop: 20 }}>
                         <TouchableOpacity style={{
                             flex: 1,
@@ -308,7 +225,7 @@ export default function ExpenseForm() {
                             borderRadius: 10
                         }}
                             onPress={handleSubmit(onSubmit)}
-                            disabled={addExpenseService.loading}>
+                            disabled={scheduleExpenseService.loading}>
                             <Text style={{ textAlign: 'center' }}>Submit</Text>
                         </TouchableOpacity>
                     </View>

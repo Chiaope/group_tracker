@@ -2,21 +2,10 @@ import { View, Text, TouchableOpacity } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { ExpenseData } from "../Components/ExpenseListItem"
 import { useEffect, useState } from "react"
-import { useAddExpense } from "@/app/Services/ExpenseServices"
+import { categoryList, useAddExpense } from "@/app/Services/ExpenseServices"
 import { CustomNumberInput, CustomTextInput, CustomDropDown } from "../Components/CustomInputs"
 import { useNavigation } from "@react-navigation/native"
 import { useToast, Toast, ToastTitle, ToastDescription } from '@/components/ui/toast'
-
-const categoryList = [
-    { label: 'Food', value: 'food' },
-    { label: 'House', value: 'house' },
-    { label: 'Health', value: 'health' },
-    { label: 'Eating Out', value: 'eat_out' },
-    { label: 'Entertainment', value: 'entertainment' },
-    { label: 'Vehicle', value: 'vehicle' },
-    { label: 'Transport', value: 'transport' },
-    { label: 'Education', value: 'education' },
-]
 
 
 export default function ExpenseForm() {
@@ -83,14 +72,6 @@ export default function ExpenseForm() {
         <View style={{
             flex: 1,
         }}>
-            <View style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                gap: 15, 
-                marginTop: 20,
-                alignItems: 'stretch'
-            }}>
-            </View>
             <View style={{
                 flex: 1,
                 flexDirection: 'row',

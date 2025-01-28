@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react"
 import { supabase } from "../Utils/supabase";
 import { ExpenseData } from "@/app/Components/ExpenseListItem";
+import { ScheduledExpenseData } from "../Components/ScheduledExpenseListItem";
 
 
 const env = process.env.EXPO_PUBLIC_ENV || ""
@@ -10,6 +11,7 @@ let insertExpenseSQLFunction: any
 let deleteExpenseSQLFunction: any
 let getAllScheduledExpenseSQLFunction: any
 let scheduleExpenseSQLFunction: any
+let deleteScheduledExpenseSQLFunction: any
 
 if (env == 'local') {
     getAllExpenseSQLFunction = 'get_all_test_expense'
@@ -17,16 +19,26 @@ if (env == 'local') {
     deleteExpenseSQLFunction = 'fake_delete_expense'
     getAllScheduledExpenseSQLFunction = 'get_all_scheduled_test_expense'
     scheduleExpenseSQLFunction = 'fake_schedule_expense'
+    deleteScheduledExpenseSQLFunction = 'fake_delete_scheduled_expense'
 } else {
     getAllExpenseSQLFunction = 'get_all_expense'
     insertExpenseSQLFunction = 'insert_expense'
     deleteExpenseSQLFunction = 'delete_expense'
     getAllScheduledExpenseSQLFunction = 'get_all_scheduled_expense'
     scheduleExpenseSQLFunction = 'schedule_expense'
+    deleteScheduledExpenseSQLFunction = 'delete_scheduled_expense'
 }
 
-
-
+const categoryList = [
+    { label: 'Food', value: 'food' },
+    { label: 'House', value: 'house' },
+    { label: 'Health', value: 'health' },
+    { label: 'Eating Out', value: 'eat_out' },
+    { label: 'Entertainment', value: 'entertainment' },
+    { label: 'Vehicle', value: 'vehicle' },
+    { label: 'Transport', value: 'transport' },
+    { label: 'Education', value: 'education' },
+]
 
 function useGetAllExpense() {
     const [loading, setLoading] = useState<boolean>(false)
@@ -52,7 +64,7 @@ function useGetAllExpense() {
                 allExpenseResponse = await supabase.rpc(getAllExpenseSQLFunction)
             }
             if (allExpenseResponse.error) {
-                console.log('Add expense error:')
+                console.log('Get all expense error:')
                 console.log(allExpenseResponse.error.message)
                 console.log(allExpenseResponse.status)
                 console.log(allExpenseResponse.statusText)
@@ -130,6 +142,7 @@ function useDeleteExpense() {
         try {
             setDeleted(false)
             setLoading(true)
+            setError(null)
             const deleteExpenseResponse = await supabase.rpc(deleteExpenseSQLFunction, { 'expense_id': id })
             console.log(deleteExpenseResponse.data)
             if (deleteExpenseResponse.error) {
@@ -155,15 +168,49 @@ function useDeleteExpense() {
     return { deleteExpense, loading, deleted, error } as const
 }
 
+function useGetAllScheduledExpense() {
+    const [loading, setLoading] = useState<boolean>(false)
+    const [error, setError] = useState<any>(null)
+    const [allScheduledExpense, setAllScheduledExpense] = useState<ScheduledExpenseData[]>([])
+
+    const getAllScheduledExpense = useCallback(async function (group_input: undefined | number) {
+        console.log('Get all scheduled expense')
+        try {
+            setLoading(true)
+            setError(null)
+            setAllScheduledExpense([])
+            let allScheduledExpenseResponse = await supabase.rpc(getAllScheduledExpenseSQLFunction, { 'group_input': group_input })
+            if (allScheduledExpenseResponse.error) {
+                console.log('Get all scheduled expense error:')
+                console.log(allScheduledExpenseResponse.error.message)
+                console.log(allScheduledExpenseResponse.status)
+                console.log(allScheduledExpenseResponse.statusText)
+                setError(
+                    {
+                        "error": allScheduledExpenseResponse.error,
+                        "status": allScheduledExpenseResponse.status,
+                        "statusText": allScheduledExpenseResponse.statusText
+                    }
+                )
+                throw allScheduledExpenseResponse.error
+            }
+            setAllScheduledExpense(allScheduledExpenseResponse.data)
+        } catch (error: any) { } finally {
+            setLoading(false)
+        }
+    }, [])
+
+    return { getAllScheduledExpense, loading, allScheduledExpense, error } as const
+}
 
 function useScheduleExpense() {
     const [loading, setLoading] = useState<any>(false)
     const [scheduled, setScheduled] = useState(false)
     const [error, setError] = useState<any>(null)
 
-    const scheduleExpense = useCallback(async function (expenseData: ExpenseData, cron_input: string) {
+    const scheduleExpense = useCallback(async function (scheduledExpenseData: ScheduledExpenseData, cron_input: string) {
         console.log('Schedule Expense')
-        console.log(expenseData)
+        console.log(scheduledExpenseData)
         console.log(cron_input)
         try {
             setScheduled(false)
@@ -171,12 +218,12 @@ function useScheduleExpense() {
             setError(null)
             let scheduletData = {
                 'cron_input': cron_input,
-                'amount_cents_input': expenseData.amount_cents,
-                'title_input': expenseData.title,
-                'category_input': expenseData.category,
+                'amount_cents_input': scheduledExpenseData.amount_cents,
+                'title_input': scheduledExpenseData.title,
+                'category_input': scheduledExpenseData.category,
                 'group_input': 1,
                 'created_by_input': 'ME',
-                'end_date_input': expenseData.end_date
+                'end_date_input': scheduledExpenseData.end_date
             }
             const scheduleExpenseResponse = await supabase.rpc(scheduleExpenseSQLFunction, scheduletData)
             console.log(scheduleExpenseResponse.data)
@@ -203,4 +250,42 @@ function useScheduleExpense() {
     return { scheduleExpense, loading, scheduled, error } as const
 }
 
-export { useGetAllExpense, useAddExpense, useDeleteExpense, useScheduleExpense }
+function useDeleteScheduledExpense() {
+    const [loading, setLoading] = useState<any>(false)
+    const [scheduledExpenseDeleted, setScheduledExpenseDeleted] = useState(false)
+    const [error, setError] = useState<any>(null)
+
+    const deleteScheduledExpense = useCallback(async function (id: number) {
+        console.log('Delete scheduled expense id:')
+        console.log(id)
+        try {
+            setScheduledExpenseDeleted(false)
+            setLoading(true)
+            setError(null)
+            const deleteScheduledExpenseResponse = await supabase.rpc(deleteScheduledExpenseSQLFunction, { 'scheduled_expense_id': id })
+            console.log('Delete scheduled expense response data:')
+            console.log(deleteScheduledExpenseResponse.data)
+            if (deleteScheduledExpenseResponse.error) {
+                console.log('Delete scheduled expense error:')
+                console.log(deleteScheduledExpenseResponse.error.message)
+                console.log(deleteScheduledExpenseResponse.status)
+                console.log(deleteScheduledExpenseResponse.statusText)
+                setError(
+                    {
+                        "error": deleteScheduledExpenseResponse.error,
+                        "status": deleteScheduledExpenseResponse.status,
+                        "statusText": deleteScheduledExpenseResponse.statusText
+                    }
+                )
+                throw deleteScheduledExpenseResponse.error
+            } else {
+                setScheduledExpenseDeleted(true)
+            }
+        } catch (error: any) { } finally {
+            setLoading(false)
+        }
+    }, [])
+    return { deleteScheduledExpense: deleteScheduledExpense, loading, deleted: scheduledExpenseDeleted, error } as const
+}
+
+export { useGetAllExpense, useAddExpense, useDeleteExpense, useGetAllScheduledExpense, useScheduleExpense, useDeleteScheduledExpense, categoryList }

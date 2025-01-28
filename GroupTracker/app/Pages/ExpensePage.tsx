@@ -27,7 +27,7 @@ export default function ExpensePage() {
 
     useEffect(() => {
         if (!deleteExpenseService.loading) {
-            console.log('Delete loading')
+            console.log('Delete expense loading')
             if (deleteExpenseService.error) {
                 console.log(deleteExpenseService.error)
                 showNewToast("error", "Failed to delete expense.")
