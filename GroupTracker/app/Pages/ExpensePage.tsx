@@ -12,6 +12,7 @@ export default function ExpensePage() {
     const getAllExpenseService = useGetAllExpense()
     const deleteExpenseService = useDeleteExpense()
     const toast = useShowToast()
+    const [addedExpense, setAddedExpense] = useState(false)
 
     const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "short" };
     let formattedDate = new Intl.DateTimeFormat('en-US', options).format(selectedDate);
@@ -19,10 +20,10 @@ export default function ExpensePage() {
     useEffect(() => {
         let refDate = new Date(selectedDate)
         let startDate = new Date(refDate.setDate(1))
-        let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth()+1, 1))
+        let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth() + 1, 1))
         getAllExpenseService.getAllExpense(startDate, endDate)
         console.log('running use effect')
-    }, [deleteExpenseService.deleted, selectedDate])
+    }, [deleteExpenseService.deleted, selectedDate, addedExpense])
 
 
     useEffect(() => {
@@ -43,13 +44,13 @@ export default function ExpensePage() {
     const onRefresh = useCallback(() => {
         let refDate = new Date()
         let startDate = new Date(refDate.setDate(1))
-        let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth()+1, 1))
+        let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth() + 1, 1))
         getAllExpenseService.getAllExpense(startDate, endDate)
     }, []);
 
 
     const deleteFunction = useCallback(async (id: number) => {
-        const deleteResponse = await deleteExpenseService.deleteExpense(id)
+        await deleteExpenseService.deleteExpense(id)
     }, []);
 
 
@@ -57,7 +58,8 @@ export default function ExpensePage() {
 
     function addButtonPressed() {
         console.log('add button pressed')
-        navigation.navigate('Expense Form')
+        setAddedExpense(false)
+        navigation.navigate('Expense Form', { 'addedExpense': setAddedExpense })
     }
 
     function prevMonthPressed() {

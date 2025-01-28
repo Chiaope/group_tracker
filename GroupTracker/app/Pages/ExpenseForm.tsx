@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useShowToast } from "../Components/CustomToast"
 
 
-export default function ExpenseForm() {
+export default function ExpenseForm({ route }: any) {
     const {
         control,
         handleSubmit,
@@ -18,6 +18,7 @@ export default function ExpenseForm() {
     const addExpenseService = useAddExpense()
     const toast = useShowToast()
     const navigation = useNavigation<any>();
+    const { addedExpense } = route.params;
 
     useEffect(() => {
         if (!addExpenseService.loading) {
@@ -29,6 +30,7 @@ export default function ExpenseForm() {
                 if (addExpenseService.inserted) {
                     console.log('Inserted successfully')
                     toast.showToast("success", "Successfully inserted expense.")
+                    addedExpense(true)
                     navigation.goBack()
                 }
             }
@@ -62,8 +64,8 @@ export default function ExpenseForm() {
                     alignItems: 'stretch',
                     rowGap: 5
                 }}>
-                    <View style={{alignItems: 'center', padding: 10, backgroundColor: 'lightblue', borderRadius: 10}}>
-                        <Text style={{textAlign: 'center', fontSize: 20}}>Immediate Expense</Text>
+                    <View style={{ alignItems: 'center', padding: 10, backgroundColor: 'lightblue', borderRadius: 10 }}>
+                        <Text style={{ textAlign: 'center', fontSize: 20 }}>Immediate Expense</Text>
                     </View>
                     <View>
                         <Text>Amount</Text>
@@ -135,20 +137,20 @@ export default function ExpenseForm() {
                         />
                     </View>
                     <View>
-                                <Text>Description</Text>
-                                <Controller
-                                    control={control}
-                                    render={({ field: { onChange, onBlur, value } }) => (
-                                        <CustomTextInput
-                                            placeholder="Description"
-                                            onBlur={onBlur}
-                                            onChangeText={onChange}
-                                            value={value || undefined}
-                                        />
-                                    )}
-                                    name="description"
+                        <Text>Description</Text>
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <CustomTextInput
+                                    placeholder="Description"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value || undefined}
                                 />
-                            </View>
+                            )}
+                            name="description"
+                        />
+                    </View>
                     <View style={{ flexDirection: 'row', gap: 15, marginTop: 20 }}>
                         <TouchableOpacity style={{
                             flex: 1,

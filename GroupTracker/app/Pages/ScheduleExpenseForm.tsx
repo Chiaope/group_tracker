@@ -15,7 +15,7 @@ function generateDateFromMonthYearString(monthYearString: any, separator: string
 }
 
 
-export default function ScheduleExpenseForm() {
+export default function ScheduleExpenseForm({ route }: any) {
     const {
         control,
         handleSubmit,
@@ -26,6 +26,7 @@ export default function ScheduleExpenseForm() {
     const toast = useShowToast()
     const [selectedDate, setSelectedDate] = useState<null | Date>()
     const navigation = useNavigation<any>();
+    const { addedScheduledExpense } = route.params;
 
     useEffect(() => {
         if (!scheduleExpenseService.loading) {
@@ -37,6 +38,7 @@ export default function ScheduleExpenseForm() {
                 if (scheduleExpenseService.scheduled) {
                     console.log('Scheduled successfully')
                     selectedDate && toast.showToast("success", `Expense will be added on every 3rd of the month until last payment on ${selectedDate.toISOString().split('T')[0]}.`)
+                    addedScheduledExpense(true)
                     navigation.goBack()
                 }
             }
@@ -144,49 +146,49 @@ export default function ScheduleExpenseForm() {
                         />
                     </View>
                     <View style={{ gap: 15 }}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <View>
-                                        <Text>Last Payment Month-Year</Text>
-                                        <Controller
-                                            control={control}
-                                            rules={{
-                                                required: true,
-                                                validate: (value) => {
-                                                    console.log("Last Payment Date Value")
-                                                    console.log(value)
-                                                    if (value) {
-                                                        let today = new Date()
-                                                        let newDate = generateDateFromMonthYearString(value)
+                        <View style={{ flexDirection: 'row' }}>
+                            <View>
+                                <Text>Last Payment Month-Year</Text>
+                                <Controller
+                                    control={control}
+                                    rules={{
+                                        required: true,
+                                        validate: (value) => {
+                                            console.log("Last Payment Date Value")
+                                            console.log(value)
+                                            if (value) {
+                                                let today = new Date()
+                                                let newDate = generateDateFromMonthYearString(value)
 
-                                                        // @ts-ignore
-                                                        if (!isNaN(newDate)) {
-                                                            if (newDate <= today) {
-                                                                return false
-                                                            }
-                                                            console.log(newDate)
-                                                            setSelectedDate(newDate)
-                                                            return true
-                                                        } else {
-                                                            return false
-                                                        }
+                                                // @ts-ignore
+                                                if (!isNaN(newDate)) {
+                                                    if (newDate <= today) {
+                                                        return false
                                                     }
+                                                    console.log(newDate)
+                                                    setSelectedDate(newDate)
+                                                    return true
+                                                } else {
+                                                    return false
                                                 }
-                                            }}
-                                            render={({ field: { onChange, onBlur, value } }) => (
-                                                <CustomTextInput
-                                                    placeholder="MM-YYYY"
-                                                    onBlur={onBlur}
-                                                    onChangeText={onChange}
-                                                    value={value}
-                                                    error={errors.end_date}
-                                                />
-                                            )}
-                                            name="end_date"
+                                            }
+                                        }
+                                    }}
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                        <CustomTextInput
+                                            placeholder="MM-YYYY"
+                                            onBlur={onBlur}
+                                            onChangeText={onChange}
+                                            value={value}
+                                            error={errors.end_date}
                                         />
-                                    </View>
-                                </View>
-                                {selectedDate && <Text>Will add expense on every 1st of the month, until last payment on {selectedDate.toISOString().split('T')[0]}</Text>}
+                                    )}
+                                    name="end_date"
+                                />
                             </View>
+                        </View>
+                        {selectedDate && <Text>Will add expense on every 1st of the month, until last payment on {selectedDate.toISOString().split('T')[0]}</Text>}
+                    </View>
                     <View style={{ flexDirection: 'row', gap: 15, marginTop: 20 }}>
                         <TouchableOpacity style={{
                             flex: 1,

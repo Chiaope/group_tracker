@@ -2,7 +2,7 @@ import { Button, FlatList, View, Text, RefreshControl } from "react-native"
 import ScheduledExpenseListItem from "../Components/ScheduledExpenseListItem"
 import { useDeleteScheduledExpense, useGetAllScheduledExpense } from "@/app/Services/ExpenseServices"
 import { useNavigation } from "@react-navigation/native"
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useShowToast } from "../Components/CustomToast"
 
 export default function ScheduledExpensePage() {
@@ -10,13 +10,14 @@ export default function ScheduledExpensePage() {
     const getAllScheduledExpenseService = useGetAllScheduledExpense()
     const deleteScheduledExpenseService = useDeleteScheduledExpense()
     const toast = useShowToast()
+    const [addedScheduledExpense, setAddedScheduledExpense] = useState(false)
 
     const group_input = 1
     let monthlyRecurringExpense = getAllScheduledExpenseService.allScheduledExpense.reduce((accumulator, current) => accumulator + current.amount_cents, 0)
 
     useEffect(() => {
         getAllScheduledExpenseService.getAllScheduledExpense(group_input)
-    }, [deleteScheduledExpenseService.scheduledExpenseDeleted])
+    }, [deleteScheduledExpenseService.scheduledExpenseDeleted, addedScheduledExpense])
 
 
     useEffect(() => {
@@ -48,7 +49,8 @@ export default function ScheduledExpensePage() {
 
     function addButtonPressed() {
         console.log('add button pressed')
-        navigation.navigate('Schedule Expense Form')
+        setAddedScheduledExpense(false)
+        navigation.navigate('Schedule Expense Form', {'addedScheduledExpense': setAddedScheduledExpense})
     }
 
 
