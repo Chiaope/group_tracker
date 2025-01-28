@@ -11,7 +11,7 @@ function generateDateFromMonthYearString(monthYearString: any, separator: string
     let splittedMonthYear = monthYearString.split(separator)
     let month = Number(splittedMonthYear[0])
     let year = Number(splittedMonthYear[1])
-    return new Date(Date.UTC(year, month - 1, 1))
+    return new Date(Date.UTC(year, month - 1, 3))
 }
 
 
