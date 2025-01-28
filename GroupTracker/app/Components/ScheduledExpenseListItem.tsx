@@ -43,6 +43,10 @@ export default function ScheduledExpenseListItem({ scheduledExpenseData, deleteF
             backgroundColor: 'blue',
             flexDirection: 'row',
             justifyContent: 'space-between',
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            borderBottomLeftRadius: collapse ? 0 : 10,
+            borderBottomRightRadius: collapse ? 0 : 10
         },
         negativeButton: {
             backgroundColor: 'red'
@@ -57,6 +61,17 @@ export default function ScheduledExpenseListItem({ scheduledExpenseData, deleteF
         additionalDetails: {
             backgroundColor: 'white',
             padding: 10
+        },
+        deleteButton: {
+            borderBottomLeftRadius: 10,
+            borderBottomRightRadius: 10,
+            backgroundColor: 'red',
+            padding: 8
+        },
+        deleteButtonText: {
+            textAlign: 'center',
+            paddingHorizontal: 10,
+            color: 'white',
         }
     });
 
@@ -96,7 +111,13 @@ export default function ScheduledExpenseListItem({ scheduledExpenseData, deleteF
                                 End Date: {scheduledExpenseData.end_date || "No End Date"}
                             </Text>
                         </View>
-                        <Button title="Delete" onPress={() => { onDeletePressed(scheduledExpenseData.id) }} />
+                        <TouchableOpacity onPress={() => { onDeletePressed(scheduledExpenseData.id) }}>
+                            <View style={styles.deleteButton}>
+                                <Text style={styles.deleteButtonText}>
+                                    DELETE
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 }
             </TouchableOpacity >

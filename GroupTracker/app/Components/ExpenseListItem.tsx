@@ -34,7 +34,7 @@ export default function ExpenseListItem({ expenseData, deleteFunction }: Props) 
             alignItems: 'center',
         },
         touchable: {
-            width: '100%'
+            width: '100%',
         },
         baseButton: {
             padding: 10,
@@ -43,6 +43,10 @@ export default function ExpenseListItem({ expenseData, deleteFunction }: Props) 
             backgroundColor: 'blue',
             flexDirection: 'row',
             justifyContent: 'space-between',
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            borderBottomLeftRadius: collapse ? 0 : 10,
+            borderBottomRightRadius: collapse ? 0 : 10
         },
         negativeButton: {
             backgroundColor: 'red'
@@ -57,6 +61,17 @@ export default function ExpenseListItem({ expenseData, deleteFunction }: Props) 
         additionalDetails: {
             backgroundColor: 'white',
             padding: 10
+        },
+        deleteButton: {
+            borderBottomLeftRadius: 10,
+            borderBottomRightRadius: 10,
+            backgroundColor: 'red',
+            padding: 8
+        },
+        deleteButtonText: {
+            textAlign: 'center',
+            paddingHorizontal: 10,
+            color: 'white',
         }
     });
 
@@ -96,7 +111,13 @@ export default function ExpenseListItem({ expenseData, deleteFunction }: Props) 
                                 Description: {expenseData.description || "No Descriptions"}
                             </Text>
                         </View>
-                        <Button title="Delete" onPress={() => { onDeletePressed(expenseData.id) }} />
+                        <TouchableOpacity onPress={() => { onDeletePressed(expenseData.id) }}>
+                            <View style={styles.deleteButton}>
+                                <Text style={styles.deleteButtonText}>
+                                    DELETE
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 }
             </TouchableOpacity >
