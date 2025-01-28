@@ -4,8 +4,8 @@ import { useEffect, useState } from "react"
 import { categoryList, useScheduleExpense } from "@/app/Services/ExpenseServices"
 import { CustomNumberInput, CustomTextInput, CustomDropDown } from "../Components/CustomInputs"
 import { useNavigation } from "@react-navigation/native"
-import { useToast, Toast, ToastTitle, ToastDescription } from '@/components/ui/toast'
 import { ScheduledExpenseData } from "../Components/ScheduledExpenseListItem"
+import { useShowToast } from "../Components/CustomToast"
 
 function generateDateFromMonthYearString(monthYearString: any, separator: string = '-') {
     let splittedMonthYear = monthYearString.split(separator)
@@ -23,29 +23,8 @@ export default function ScheduleExpenseForm() {
     } = useForm<ScheduledExpenseData>({})
     const [open, setOpen] = useState(false)
     const scheduleExpenseService = useScheduleExpense()
-    const toast = useToast()
+    const toast = useShowToast()
     const [selectedDate, setSelectedDate] = useState<null | Date>()
-
-    function showNewToast(action: any, message: string) {
-        const newId = Math.random().toString()
-        toast.show({
-            id: newId,
-            placement: "top",
-            duration: 3000,
-            render: ({ id }) => {
-                const uniqueToastId = "toast-" + id
-                return (
-                    <Toast nativeID={uniqueToastId} action={action} variant="solid">
-                        <ToastTitle>Status:</ToastTitle>
-                        <ToastDescription>
-                            {message}
-                        </ToastDescription>
-                    </Toast>
-                )
-            },
-        })
-    }
-
     const navigation = useNavigation<any>();
 
     useEffect(() => {
@@ -53,11 +32,11 @@ export default function ScheduleExpenseForm() {
             console.log('loading')
             if (scheduleExpenseService.error) {
                 console.log(scheduleExpenseService.error)
-                showNewToast("error", "Failed to schedule expense.")
+                toast.showToast("error", "Failed to schedule expense.")
             } else {
                 if (scheduleExpenseService.scheduled) {
                     console.log('Scheduled successfully')
-                    selectedDate && showNewToast("success", `Expense will be added on every 3rd of the month until last payment on ${selectedDate.toISOString().split('T')[0]}.`)
+                    selectedDate && toast.showToast("success", `Expense will be added on every 3rd of the month until last payment on ${selectedDate.toISOString().split('T')[0]}.`)
                     navigation.goBack()
                 }
             }

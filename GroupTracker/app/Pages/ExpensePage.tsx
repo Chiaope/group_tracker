@@ -3,15 +3,15 @@ import ExpenseListItem from "../Components/ExpenseListItem"
 import { useDeleteExpense, useGetAllExpense } from "@/app/Services/ExpenseServices"
 import { useNavigation } from "@react-navigation/native"
 import { useCallback, useEffect, useState } from "react"
-import { Toast, ToastDescription, ToastTitle, useToast } from "@/components/ui/toast"
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useShowToast } from "../Components/CustomToast"
 
 export default function ExpensePage() {
     console.log("~~~~~ Expense Page ~~~~~")
     const [selectedDate, setSelectedDate] = useState<Date>(new Date())
     const getAllExpenseService = useGetAllExpense()
     const deleteExpenseService = useDeleteExpense()
-    const toast = useToast()
+    const toast = useShowToast()
 
     const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "short" };
     let formattedDate = new Intl.DateTimeFormat('en-US', options).format(selectedDate);
@@ -30,35 +30,15 @@ export default function ExpensePage() {
             console.log('Delete expense loading')
             if (deleteExpenseService.error) {
                 console.log(deleteExpenseService.error)
-                showNewToast("error", "Failed to delete expense.")
+                toast.showToast("error", "Failed to delete expense.")
             } else {
                 if (deleteExpenseService.deleted) {
                     console.log('Deleted successfully')
-                    showNewToast("success", "Successfully deleted expense.")
+                    toast.showToast("success", "Successfully deleted expense.")
                 }
             }
         }
     }, [deleteExpenseService.loading, deleteExpenseService.deleted, deleteExpenseService.error])
-
-    function showNewToast(action: any, message: string) {
-        const newId = Math.random().toString()
-        toast.show({
-            id: newId,
-            placement: "top",
-            duration: 3000,
-            render: ({ id }) => {
-                const uniqueToastId = "toast-" + id
-                return (
-                    <Toast nativeID={uniqueToastId} action={action} variant="solid">
-                        <ToastTitle>Status:</ToastTitle>
-                        <ToastDescription>
-                            {message}
-                        </ToastDescription>
-                    </Toast>
-                )
-            },
-        })
-    }
 
     const onRefresh = useCallback(() => {
         let refDate = new Date()

@@ -3,20 +3,20 @@ import ScheduledExpenseListItem from "../Components/ScheduledExpenseListItem"
 import { useDeleteScheduledExpense, useGetAllScheduledExpense } from "@/app/Services/ExpenseServices"
 import { useNavigation } from "@react-navigation/native"
 import { useCallback, useEffect } from "react"
-import { Toast, ToastDescription, ToastTitle, useToast } from "@/components/ui/toast"
+import { useShowToast } from "../Components/CustomToast"
 
 export default function ScheduledExpensePage() {
     console.log("~~~~~ Scheduled Expense Page ~~~~~")
     const getAllScheduledExpenseService = useGetAllScheduledExpense()
     const deleteScheduledExpenseService = useDeleteScheduledExpense()
-    const toast = useToast()
+    const toast = useShowToast()
 
     const group_input = 1
     let monthlyRecurringExpense = getAllScheduledExpenseService.allScheduledExpense.reduce((accumulator, current) => accumulator + current.amount_cents, 0)
 
     useEffect(() => {
         getAllScheduledExpenseService.getAllScheduledExpense(group_input)
-    }, [deleteScheduledExpenseService.deleted])
+    }, [deleteScheduledExpenseService.scheduledExpenseDeleted])
 
 
     useEffect(() => {
@@ -24,35 +24,15 @@ export default function ScheduledExpensePage() {
             console.log('Delete scheduled expense loading')
             if (deleteScheduledExpenseService.error) {
                 console.log(deleteScheduledExpenseService.error)
-                showNewToast("error", "Failed to delete scheduled expense.")
+                toast.showToast("error", "Failed to delete scheduled expense.")
             } else {
-                if (deleteScheduledExpenseService.deleted) {
+                if (deleteScheduledExpenseService.scheduledExpenseDeleted) {
                     console.log('Deleted scheduled expense successfully')
-                    showNewToast("success", "Successfully deleted scheduled expense.")
+                    toast.showToast("success", "Successfully deleted scheduled expense.")
                 }
             }
         }
-    }, [deleteScheduledExpenseService.loading, deleteScheduledExpenseService.deleted, deleteScheduledExpenseService.error])
-
-    function showNewToast(action: any, message: string) {
-        const newId = Math.random().toString()
-        toast.show({
-            id: newId,
-            placement: "top",
-            duration: 3000,
-            render: ({ id }) => {
-                const uniqueToastId = "toast-" + id
-                return (
-                    <Toast nativeID={uniqueToastId} action={action} variant="solid">
-                        <ToastTitle>Status:</ToastTitle>
-                        <ToastDescription>
-                            {message}
-                        </ToastDescription>
-                    </Toast>
-                )
-            },
-        })
-    }
+    }, [deleteScheduledExpenseService.loading, deleteScheduledExpenseService.scheduledExpenseDeleted, deleteScheduledExpenseService.error])
 
     const onRefresh = useCallback(() => {
         getAllScheduledExpenseService.getAllScheduledExpense(group_input)

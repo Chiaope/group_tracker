@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { categoryList, useAddExpense } from "@/app/Services/ExpenseServices"
 import { CustomNumberInput, CustomTextInput, CustomDropDown } from "../Components/CustomInputs"
 import { useNavigation } from "@react-navigation/native"
-import { useToast, Toast, ToastTitle, ToastDescription } from '@/components/ui/toast'
+import { useShowToast } from "../Components/CustomToast"
 
 
 export default function ExpenseForm() {
@@ -16,29 +16,7 @@ export default function ExpenseForm() {
     } = useForm<ExpenseData>({})
     const [open, setOpen] = useState(false)
     const addExpenseService = useAddExpense()
-    const toast = useToast()
-    const [selectedDate, setSelectedDate] = useState<null | Date>()
-
-    function showNewToast(action: any, message: string) {
-        const newId = Math.random().toString()
-        toast.show({
-            id: newId,
-            placement: "top",
-            duration: 3000,
-            render: ({ id }) => {
-                const uniqueToastId = "toast-" + id
-                return (
-                    <Toast nativeID={uniqueToastId} action={action} variant="solid">
-                        <ToastTitle>Status:</ToastTitle>
-                        <ToastDescription>
-                            {message}
-                        </ToastDescription>
-                    </Toast>
-                )
-            },
-        })
-    }
-
+    const toast = useShowToast()
     const navigation = useNavigation<any>();
 
     useEffect(() => {
@@ -46,11 +24,11 @@ export default function ExpenseForm() {
             console.log('loading')
             if (addExpenseService.error) {
                 console.log(addExpenseService.error)
-                showNewToast("error", "Failed to insert expense.")
+                toast.showToast("error", "Failed to insert expense.")
             } else {
                 if (addExpenseService.inserted) {
                     console.log('Inserted successfully')
-                    showNewToast("success", "Successfully inserted expense.")
+                    toast.showToast("success", "Successfully inserted expense.")
                     navigation.goBack()
                 }
             }

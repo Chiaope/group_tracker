@@ -285,7 +285,7 @@ function useDeleteScheduledExpense() {
             setLoading(false)
         }
     }, [])
-    return { deleteScheduledExpense: deleteScheduledExpense, loading, deleted: scheduledExpenseDeleted, error } as const
+    return { deleteScheduledExpense, loading, scheduledExpenseDeleted, error } as const
 }
 
 export { useGetAllExpense, useAddExpense, useDeleteExpense, useGetAllScheduledExpense, useScheduleExpense, useDeleteScheduledExpense, categoryList }
