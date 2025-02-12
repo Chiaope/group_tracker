@@ -11,25 +11,23 @@ export default function MyDrawer() {
 
     function CustomDrawer(props: any) {
         return (
-            <View>
-                <DrawerContentScrollView {...props}>
-                    {user?.username &&
-                        <View style={{padding: 20}}>
-                            <TouchableOpacity style={{gap: 5}}>
-                                <Text>User:</Text>
-                                <Text>{user?.username}</Text>
-                            </TouchableOpacity>
-                        </View>}
-                    <View style={{ padding: 5 }}>
-                        <DrawerItemList {...props} />
-                    </View>
-                    {/* <View>
+            <DrawerContentScrollView {...props}>
+                {user?.username &&
+                    <View style={{ padding: 20 }}>
+                        <TouchableOpacity style={{ gap: 5 }}>
+                            <Text>User:</Text>
+                            <Text>{user?.username}</Text>
+                        </TouchableOpacity>
+                    </View>}
+                <View style={{ padding: 5 }}>
+                    <DrawerItemList {...props} />
+                </View>
+                {/* <View>
                         <TouchableOpacity>
                             <Text>Logout</Text>
                         </TouchableOpacity>
                     </View> */}
-                </DrawerContentScrollView>
-            </View>
+            </DrawerContentScrollView>
         );
     };
 
