@@ -41,12 +41,12 @@ export default function ExpensePage() {
         }
     }, [deleteExpenseService.loading, deleteExpenseService.deleted, deleteExpenseService.error])
 
-    const onRefresh = useCallback(() => {
-        let refDate = new Date()
+    function onRefresh() {
+        let refDate = new Date(selectedDate)
         let startDate = new Date(refDate.setDate(1))
         let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth() + 1, 1))
         getAllExpenseService.getAllExpense(startDate, endDate)
-    }, []);
+    } 
 
 
     const deleteFunction = useCallback(async (id: number) => {
