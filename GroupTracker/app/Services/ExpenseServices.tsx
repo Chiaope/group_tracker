@@ -1,7 +1,8 @@
-import { useCallback, useState } from "react"
+import { useCallback, useContext, useState } from "react"
 import { supabase } from "../Utils/supabase";
 import { ExpenseData } from "@/app/Components/ExpenseListItem";
 import { ScheduledExpenseData } from "../Components/ScheduledExpenseListItem";
+import { UserContext } from "../Context/UserContext";
 
 
 const env = process.env.EXPO_PUBLIC_ENV || ""
@@ -91,6 +92,7 @@ function useAddExpense() {
     const [loading, setLoading] = useState<any>(false)
     const [inserted, setInserted] = useState(false)
     const [error, setError] = useState<any>(null)
+    const { user } = useContext(UserContext)
 
     const addExpense = useCallback(async function (expenseData: ExpenseData) {
         console.log('Add expense')
@@ -104,7 +106,7 @@ function useAddExpense() {
                 'title_input': expenseData.title,
                 'category_input': expenseData.category,
                 'group_input': 1,
-                'created_by_input': 'ME',
+                'created_by_input': user.id,
                 'description_input': expenseData.description
             }
             const addExpenseResponse = await supabase.rpc(insertExpenseSQLFunction, insertData)

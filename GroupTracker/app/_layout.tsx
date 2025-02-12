@@ -1,8 +1,10 @@
-import MyDrawer from "./Drawer/_layout";
-
 import "@/global.css";
-import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+
+import UserContextProvider from "./Context/UserContext";
+import Home from "./Pages/Home";
 
 export default function RootLayout() {
-  return <GluestackUIProvider mode="light"><MyDrawer /></GluestackUIProvider>;
+  return <UserContextProvider>
+    <Home />
+  </UserContextProvider>
 }
