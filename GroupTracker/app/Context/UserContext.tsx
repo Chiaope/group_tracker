@@ -2,17 +2,16 @@ import { createContext, useEffect, useState } from 'react';
 import { supabase } from '../Utils/supabase';
 import { Session } from '@supabase/supabase-js';
 import { useShowToast } from '../Components/CustomToast';
+import { useGetUserData, useGetUserGroupData } from '../Services/UserServices';
 
-export const UserContext = createContext<any>({
-    id: '',
-    username: '',
-    email: ''
-  });
+export const UserContext = createContext<any>({});
 
 export default function UserContextProvider({ children }: any) {
     const [loading, setLoading] = useState(true)
     const [user, setUser] = useState({})
     const [session, setSession] = useState<Session | null>(null)
+    const { userGroupData, getUserGroupData } = useGetUserGroupData()
+    const { userData, getUserData } = useGetUserData()
 
     const toast = useShowToast()
 
@@ -27,9 +26,25 @@ export default function UserContextProvider({ children }: any) {
     }, [])
 
     useEffect(() => {
-        console.log('help me please')
         if (session) getProfile()
     }, [session])
+
+    useEffect(() => {
+        console.log('Updating user info')
+        if (session?.user?.id && userGroupData && userData) {
+            console.log('this is user data')
+            console.log(userData)
+            let updatedUserData = {
+                ...user,
+                ...userData,
+                'userGroupData': userGroupData
+            }
+            if (userGroupData.length > 0) {
+                updatedUserData = { ...updatedUserData, 'selectedGroup': userGroupData[0].group_id }
+            }
+            setUser(updatedUserData)
+        }
+    }, [userGroupData, userData, session?.user?.id])
 
 
     async function getProfile() {
@@ -37,21 +52,12 @@ export default function UserContextProvider({ children }: any) {
         try {
             setLoading(true)
             if (!session?.user) throw new Error('No user on the session!')
-
-            const { data, error, status } = await supabase
-                .from('profiles')
-                .select(`id, username, email`)
-                .eq('id', session?.user.id)
-                .single()
-            if (error && status !== 406) {
-                throw error
+            if (session?.user?.id) {
+                await getUserGroupData(session.user.id)
+                await getUserData(session.user.id)
             }
 
-            if (data) {
-                console.log('user data')
-                console.log(data)
-                setUser(data)
-            }
+
         } catch (error) {
             if (error instanceof Error) {
                 toast.showToast("error", error.message)
@@ -61,7 +67,7 @@ export default function UserContextProvider({ children }: any) {
         }
     }
 
-    return <UserContext.Provider value={{user}}>
+    return <UserContext.Provider value={{ user, setUser }}>
         {children}
     </UserContext.Provider>
 }

@@ -2,22 +2,23 @@ import { Button, FlatList, View, Text, RefreshControl } from "react-native"
 import ScheduledExpenseListItem from "../Components/ScheduledExpenseListItem"
 import { useDeleteScheduledExpense, useGetAllScheduledExpense } from "@/app/Services/ExpenseServices"
 import { useNavigation } from "@react-navigation/native"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { useShowToast } from "../Components/CustomToast"
+import { UserContext } from "../Context/UserContext"
 
 export default function ScheduledExpensePage() {
     console.log("~~~~~ Scheduled Expense Page ~~~~~")
+    const { user } = useContext(UserContext)
     const getAllScheduledExpenseService = useGetAllScheduledExpense()
     const deleteScheduledExpenseService = useDeleteScheduledExpense()
     const toast = useShowToast()
     const [addedScheduledExpense, setAddedScheduledExpense] = useState(false)
 
-    const group_input = 1
     let monthlyRecurringExpense = getAllScheduledExpenseService.allScheduledExpense.reduce((accumulator, current) => accumulator + current.amount_cents, 0)
 
     useEffect(() => {
-        getAllScheduledExpenseService.getAllScheduledExpense(group_input)
-    }, [deleteScheduledExpenseService.scheduledExpenseDeleted, addedScheduledExpense])
+        getAllScheduledExpenseService.getAllScheduledExpense(user.selectedGroup)
+    }, [deleteScheduledExpenseService.scheduledExpenseDeleted, addedScheduledExpense, user.selectedGroup])
 
 
     useEffect(() => {
@@ -36,7 +37,7 @@ export default function ScheduledExpensePage() {
     }, [deleteScheduledExpenseService.loading, deleteScheduledExpenseService.scheduledExpenseDeleted, deleteScheduledExpenseService.error])
 
     const onRefresh = useCallback(() => {
-        getAllScheduledExpenseService.getAllScheduledExpense(group_input)
+        getAllScheduledExpenseService.getAllScheduledExpense(user.selectedGroup)
     }, []);
 
 
@@ -50,7 +51,7 @@ export default function ScheduledExpensePage() {
     function addButtonPressed() {
         console.log('add button pressed')
         setAddedScheduledExpense(false)
-        navigation.navigate('Schedule Expense Form', {'addedScheduledExpense': setAddedScheduledExpense})
+        navigation.navigate('Schedule Expense Form', { 'addedScheduledExpense': setAddedScheduledExpense })
     }
 
 

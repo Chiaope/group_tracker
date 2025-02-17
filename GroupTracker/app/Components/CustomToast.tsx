@@ -1,11 +1,11 @@
-import { Toast, useToast,ToastTitle, ToastDescription } from "@/components/ui/toast"
+import { Toast, useToast, ToastTitle, ToastDescription } from "@/components/ui/toast"
 import { useCallback } from "react"
 
 function useShowToast() {
     const toast = useToast()
     const newId = Math.random().toString()
 
-    const showToast = useCallback(function(action: any, message: string) {
+    const showToast = useCallback(function (action: any, message: string) {
         toast.show({
             id: newId,
             placement: "top",
@@ -25,4 +25,4 @@ function useShowToast() {
     }, [])
     return { showToast } as const
 }
-export {useShowToast}
+export { useShowToast }

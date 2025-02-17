@@ -1,14 +1,16 @@
 import { View, Text, TouchableOpacity } from "react-native"
 import { useForm, Controller } from "react-hook-form"
-import { ExpenseData } from "../Components/ExpenseListItem"
-import { useEffect, useState } from "react"
+import { ExpenseData } from "../Services/ExpenseServices"
+import { useContext, useEffect, useState } from "react"
 import { categoryList, useAddExpense } from "@/app/Services/ExpenseServices"
 import { CustomNumberInput, CustomTextInput, CustomDropDown } from "../Components/CustomInputs"
 import { useNavigation } from "@react-navigation/native"
 import { useShowToast } from "../Components/CustomToast"
+import { UserContext } from "../Context/UserContext"
 
 
 export default function ExpenseForm({ route }: any) {
+    const { user } = useContext(UserContext)
     const {
         control,
         handleSubmit,
@@ -41,7 +43,7 @@ export default function ExpenseForm({ route }: any) {
         data = { ...data, amount_cents: Math.round(data.amount_cents * 100) }
         console.log('submit')
         console.log(data)
-        addExpenseService.addExpense(data)
+        addExpenseService.addExpense(user.selectedGroup, data)
     }
 
     function onCancel() {
@@ -67,19 +69,19 @@ export default function ExpenseForm({ route }: any) {
                     <View style={{ alignItems: 'center', padding: 10, backgroundColor: 'lightblue', borderRadius: 10 }}>
                         <Text style={{ textAlign: 'center', fontSize: 20 }}>Immediate Expense</Text>
                     </View>
-                    <View>
-                        <Text>Amount</Text>
-                        <Controller
-                            control={control}
-                            rules={{
-                                required: true,
-                                validate: (value) => {
-                                    console.log("value")
-                                    console.log(value)
-                                    return /^\s*-?[0-9]\d*(\.\d{1,2})?\s*$/.test(String(value))
-                                }
-                            }}
-                            render={({ field: { onChange, onBlur, value } }) => (
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: true,
+                            validate: (value) => {
+                                console.log("value")
+                                console.log(value)
+                                return /^\s*-?[0-9]\d*(\.\d{1,2})?\s*$/.test(String(value))
+                            }
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <>
+                                <Text>Amount</Text>
                                 <CustomNumberInput
                                     placeholder="Amount"
                                     onBlur={onBlur}
@@ -87,18 +89,18 @@ export default function ExpenseForm({ route }: any) {
                                     value={value}
                                     error={errors.amount_cents}
                                 />
-                            )}
-                            name="amount_cents"
-                        />
-                    </View>
-                    <View>
-                        <Text>Title</Text>
-                        <Controller
-                            control={control}
-                            rules={{
-                                required: true,
-                            }}
-                            render={({ field: { onChange, onBlur, value } }) => (
+                            </>
+                        )}
+                        name="amount_cents"
+                    />
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: true,
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <>
+                                <Text>Title</Text>
                                 <CustomTextInput
                                     placeholder="Title"
                                     onBlur={onBlur}
@@ -106,19 +108,19 @@ export default function ExpenseForm({ route }: any) {
                                     value={value}
                                     error={errors.title}
                                 />
-                            )}
-                            name="title"
-                        />
-                    </View>
-                    <View>
-                        <Text>Category</Text>
-                        <Controller
-                            control={control}
-                            rules={{
-                                required: true,
-                            }}
-                            render={({ field: { onChange, onBlur, value } }) => {
-                                return (
+                            </>
+                        )}
+                        name="title"
+                    />
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: true,
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => {
+                            return (
+                                <>
+                                    <Text>Category</Text>
                                     <CustomDropDown
                                         placeholder="Category"
                                         value={value}
@@ -131,26 +133,26 @@ export default function ExpenseForm({ route }: any) {
                                         }}
                                         error={errors.category}
                                     />
-                                )
-                            }}
-                            name="category"
-                        />
-                    </View>
-                    <View>
-                        <Text>Description</Text>
-                        <Controller
-                            control={control}
-                            render={({ field: { onChange, onBlur, value } }) => (
+                                </>
+                            )
+                        }}
+                        name="category"
+                    />
+                    <Text>Description</Text>
+                    <Controller
+                        control={control}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <>
                                 <CustomTextInput
                                     placeholder="Description"
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value || undefined}
                                 />
-                            )}
-                            name="description"
-                        />
-                    </View>
+                            </>
+                        )}
+                        name="description"
+                    />
                     <View style={{ flexDirection: 'row', gap: 15, marginTop: 20 }}>
                         <TouchableOpacity style={{
                             flex: 1,

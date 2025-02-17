@@ -1,6 +1,5 @@
 import { useCallback, useContext, useState } from "react"
 import { supabase } from "../Utils/supabase";
-import { ExpenseData } from "@/app/Components/ExpenseListItem";
 import { ScheduledExpenseData } from "../Components/ScheduledExpenseListItem";
 import { UserContext } from "../Context/UserContext";
 
@@ -16,19 +15,30 @@ let scheduleExpenseSQLFunction: any
 let deleteScheduledExpenseSQLFunction: any
 
 if (env == 'local') {
-    getAllExpenseSQLFunction = 'get_all_test_expense'
+    getAllExpenseSQLFunction = 'get_test_group_expense'
     insertExpenseSQLFunction = 'fake_insert_expense'
     deleteExpenseSQLFunction = 'fake_delete_expense'
     getAllScheduledExpenseSQLFunction = 'get_all_scheduled_test_expense'
     scheduleExpenseSQLFunction = 'fake_schedule_expense'
     deleteScheduledExpenseSQLFunction = 'fake_delete_scheduled_expense'
 } else {
-    getAllExpenseSQLFunction = 'get_all_expense'
+    getAllExpenseSQLFunction = 'get_group_expense'
     insertExpenseSQLFunction = 'insert_expense'
     deleteExpenseSQLFunction = 'delete_expense'
     getAllScheduledExpenseSQLFunction = 'get_all_scheduled_expense'
     scheduleExpenseSQLFunction = 'schedule_expense'
     deleteScheduledExpenseSQLFunction = 'delete_scheduled_expense'
+}
+
+export interface ExpenseData {
+    id: number;
+    created_at: string;
+    created_by: string;
+    amount_cents: number;
+    group_id: number;
+    title: string;
+    category: string;
+    description: undefined | string;
 }
 
 const categoryList = [
@@ -47,7 +57,7 @@ function useGetAllExpense() {
     const [error, setError] = useState<any>(null)
     const [allExpense, setAllExpense] = useState<ExpenseData[]>([])
 
-    const getAllExpense = useCallback(async function (startDate: undefined | Date = undefined, endDate: undefined | Date = undefined) {
+    const getAllExpense = useCallback(async function (selected_group: number, startDate: undefined | Date = undefined, endDate: undefined | Date = undefined) {
         console.log('Get all expense')
         try {
             setLoading(true)
@@ -60,10 +70,10 @@ function useGetAllExpense() {
                 console.log("date str info")
                 console.log(startDateStr)
                 console.log(endDateStr)
-                allExpenseResponse = await supabase.rpc(getAllExpenseSQLFunction, { 'start_date': startDateStr, 'end_date': endDateStr })
+                allExpenseResponse = await supabase.rpc(getAllExpenseSQLFunction, { 'selected_group': selected_group, 'start_date': startDateStr, 'end_date': endDateStr })
             } else {
                 console.log(getAllExpenseSQLFunction)
-                allExpenseResponse = await supabase.rpc(getAllExpenseSQLFunction)
+                allExpenseResponse = await supabase.rpc(getAllExpenseSQLFunction, { 'selected_group': selected_group })
             }
             if (allExpenseResponse.error) {
                 console.log('Get all expense error:')
@@ -94,7 +104,7 @@ function useAddExpense() {
     const [error, setError] = useState<any>(null)
     const { user } = useContext(UserContext)
 
-    const addExpense = useCallback(async function (expenseData: ExpenseData) {
+    async function addExpense(selectedGroup: number, expenseData: ExpenseData) {
         console.log('Add expense')
         console.log(expenseData)
         try {
@@ -105,7 +115,7 @@ function useAddExpense() {
                 'amount_cents_input': expenseData.amount_cents,
                 'title_input': expenseData.title,
                 'category_input': expenseData.category,
-                'group_input': 1,
+                'group_input': selectedGroup,
                 'created_by_input': user.id,
                 'description_input': expenseData.description
             }
@@ -130,7 +140,7 @@ function useAddExpense() {
         } catch (error: any) { } finally {
             setLoading(false)
         }
-    }, [])
+    }
     return { addExpense, loading, inserted, error } as const
 }
 
@@ -210,8 +220,9 @@ function useScheduleExpense() {
     const [loading, setLoading] = useState<any>(false)
     const [scheduled, setScheduled] = useState(false)
     const [error, setError] = useState<any>(null)
+    const { user } = useContext(UserContext)
 
-    const scheduleExpense = useCallback(async function (scheduledExpenseData: ScheduledExpenseData, cron_input: string) {
+    async function scheduleExpense(selectedGroup: number, scheduledExpenseData: ScheduledExpenseData, cron_input: string) {
         console.log('Schedule Expense')
         console.log(scheduledExpenseData)
         console.log(cron_input)
@@ -224,8 +235,8 @@ function useScheduleExpense() {
                 'amount_cents_input': scheduledExpenseData.amount_cents,
                 'title_input': scheduledExpenseData.title,
                 'category_input': scheduledExpenseData.category,
-                'group_input': 1,
-                'created_by_input': 'ME',
+                'group_input': selectedGroup,
+                'created_by_input': user.id,
                 'end_date_input': scheduledExpenseData.end_date
             }
             const scheduleExpenseResponse = await supabase.rpc(scheduleExpenseSQLFunction, scheduletData)
@@ -249,7 +260,7 @@ function useScheduleExpense() {
         } catch (error: any) { } finally {
             setLoading(false)
         }
-    }, [])
+    }
     return { scheduleExpense, loading, scheduled, error } as const
 }
 

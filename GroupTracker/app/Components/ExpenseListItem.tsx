@@ -1,20 +1,10 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Button } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { ExpenseData } from "../Services/ExpenseServices";
 
 interface Props {
     expenseData: ExpenseData
     deleteFunction: any
-}
-
-export interface ExpenseData {
-    id: number,
-    created_at: string,
-    created_by: string,
-    amount_cents: number,
-    group: number,
-    title: string,
-    category: string,
-    description: undefined | string,
 }
 
 export default function ExpenseListItem({ expenseData, deleteFunction }: Props) {

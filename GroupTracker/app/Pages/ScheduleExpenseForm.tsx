@@ -1,11 +1,12 @@
 import { View, Text, TouchableOpacity } from "react-native"
 import { useForm, Controller } from "react-hook-form"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { categoryList, useScheduleExpense } from "@/app/Services/ExpenseServices"
 import { CustomNumberInput, CustomTextInput, CustomDropDown } from "../Components/CustomInputs"
 import { useNavigation } from "@react-navigation/native"
 import { ScheduledExpenseData } from "../Components/ScheduledExpenseListItem"
 import { useShowToast } from "../Components/CustomToast"
+import { UserContext } from "../Context/UserContext"
 
 function generateDateFromMonthYearString(monthYearString: any, separator: string = '-') {
     let splittedMonthYear = monthYearString.split(separator)
@@ -16,6 +17,7 @@ function generateDateFromMonthYearString(monthYearString: any, separator: string
 
 
 export default function ScheduleExpenseForm({ route }: any) {
+    const { user } = useContext(UserContext)
     const {
         control,
         handleSubmit,
@@ -50,7 +52,7 @@ export default function ScheduleExpenseForm({ route }: any) {
         console.log('submit')
         console.log(data)
         data.end_date = generateDateFromMonthYearString(data.end_date).toISOString().split('T')[0]
-        scheduleExpenseService.scheduleExpense(data, '0 0 3 * *')
+        scheduleExpenseService.scheduleExpense(user.selectedGroup, data, '0 0 3 * *')
     }
 
     function onCancel() {
@@ -76,19 +78,19 @@ export default function ScheduleExpenseForm({ route }: any) {
                     <View style={{ alignItems: 'center', padding: 10, backgroundColor: 'lightblue', borderRadius: 10 }}>
                         <Text style={{ textAlign: 'center', fontSize: 20 }}>Schedule Expense</Text>
                     </View>
-                    <View>
-                        <Text>Amount</Text>
-                        <Controller
-                            control={control}
-                            rules={{
-                                required: true,
-                                validate: (value) => {
-                                    console.log("value")
-                                    console.log(value)
-                                    return /^\s*-?[0-9]\d*(\.\d{1,2})?\s*$/.test(String(value))
-                                }
-                            }}
-                            render={({ field: { onChange, onBlur, value } }) => (
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: true,
+                            validate: (value) => {
+                                console.log("value")
+                                console.log(value)
+                                return /^\s*-?[0-9]\d*(\.\d{1,2})?\s*$/.test(String(value))
+                            }
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <>
+                                <Text>Amount</Text>
                                 <CustomNumberInput
                                     placeholder="Amount"
                                     onBlur={onBlur}
@@ -96,18 +98,19 @@ export default function ScheduleExpenseForm({ route }: any) {
                                     value={value}
                                     error={errors.amount_cents}
                                 />
-                            )}
-                            name="amount_cents"
-                        />
-                    </View>
-                    <View>
-                        <Text>Title</Text>
-                        <Controller
-                            control={control}
-                            rules={{
-                                required: true,
-                            }}
-                            render={({ field: { onChange, onBlur, value } }) => (
+                            </>
+
+                        )}
+                        name="amount_cents"
+                    />
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: true,
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <>
+                                <Text>Title</Text>
                                 <CustomTextInput
                                     placeholder="Title"
                                     onBlur={onBlur}
@@ -115,19 +118,20 @@ export default function ScheduleExpenseForm({ route }: any) {
                                     value={value}
                                     error={errors.title}
                                 />
-                            )}
-                            name="title"
-                        />
-                    </View>
-                    <View>
-                        <Text>Category</Text>
-                        <Controller
-                            control={control}
-                            rules={{
-                                required: true,
-                            }}
-                            render={({ field: { onChange, onBlur, value } }) => {
-                                return (
+                            </>
+
+                        )}
+                        name="title"
+                    />
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: true,
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => {
+                            return (
+                                <>
+                                    <Text>Category</Text>
                                     <CustomDropDown
                                         placeholder="Category"
                                         value={value}
@@ -140,11 +144,12 @@ export default function ScheduleExpenseForm({ route }: any) {
                                         }}
                                         error={errors.category}
                                     />
-                                )
-                            }}
-                            name="category"
-                        />
-                    </View>
+                                </>
+
+                            )
+                        }}
+                        name="category"
+                    />
                     <View style={{ gap: 15 }}>
                         <View style={{ flexDirection: 'row' }}>
                             <View>

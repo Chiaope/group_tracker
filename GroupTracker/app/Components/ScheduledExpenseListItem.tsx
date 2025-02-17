@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Button } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 interface Props {
     scheduledExpenseData: ScheduledExpenseData
@@ -11,7 +11,7 @@ export interface ScheduledExpenseData {
     created_at: string,
     created_by: string,
     amount_cents: number,
-    group: number,
+    group_id: number,
     title: string,
     category: string,
     end_date: undefined | string

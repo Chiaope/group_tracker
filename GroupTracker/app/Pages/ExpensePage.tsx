@@ -2,12 +2,14 @@ import { Button, FlatList, View, Text, RefreshControl, TouchableOpacity } from "
 import ExpenseListItem from "../Components/ExpenseListItem"
 import { useDeleteExpense, useGetAllExpense } from "@/app/Services/ExpenseServices"
 import { useNavigation } from "@react-navigation/native"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useShowToast } from "../Components/CustomToast"
+import { UserContext } from "../Context/UserContext"
 
 export default function ExpensePage() {
     console.log("~~~~~ Expense Page ~~~~~")
+    const { user } = useContext(UserContext)
     const [selectedDate, setSelectedDate] = useState<Date>(new Date())
     const getAllExpenseService = useGetAllExpense()
     const deleteExpenseService = useDeleteExpense()
@@ -21,9 +23,9 @@ export default function ExpensePage() {
         let refDate = new Date(selectedDate)
         let startDate = new Date(refDate.setDate(1))
         let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth() + 1, 1))
-        getAllExpenseService.getAllExpense(startDate, endDate)
+        getAllExpenseService.getAllExpense(user.selectedGroup, startDate, endDate)
         console.log('running use effect')
-    }, [deleteExpenseService.deleted, selectedDate, addedExpense])
+    }, [deleteExpenseService.deleted, selectedDate, addedExpense, user.selectedGroup])
 
 
     useEffect(() => {
@@ -45,8 +47,8 @@ export default function ExpensePage() {
         let refDate = new Date(selectedDate)
         let startDate = new Date(refDate.setDate(1))
         let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth() + 1, 1))
-        getAllExpenseService.getAllExpense(startDate, endDate)
-    } 
+        getAllExpenseService.getAllExpense(user.selectedGroup, startDate, endDate)
+    }
 
 
     const deleteFunction = useCallback(async (id: number) => {
