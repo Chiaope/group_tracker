@@ -6,7 +6,6 @@ import { UserContext } from "../Context/UserContext";
 
 const env = process.env.EXPO_PUBLIC_ENV || ""
 
-
 let getAllExpenseSQLFunction: any
 let insertExpenseSQLFunction: any
 let deleteExpenseSQLFunction: any

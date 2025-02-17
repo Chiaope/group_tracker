@@ -4,7 +4,6 @@ import { supabase } from "../Utils/supabase"
 
 const env = process.env.EXPO_PUBLIC_ENV || ""
 
-
 let getUserGroupInfoSQLFunction: string
 let getUserInfoSQLFunction: string
 
