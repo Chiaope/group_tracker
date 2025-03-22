@@ -16,6 +16,7 @@ export default function UserContextProvider({ children }: any) {
     const toast = useShowToast()
 
     useEffect(() => {
+        setLoading(true)
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session)
         })
@@ -23,6 +24,7 @@ export default function UserContextProvider({ children }: any) {
         supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session)
         })
+        setLoading(false)
     }, [])
 
     useEffect(() => {
@@ -67,7 +69,7 @@ export default function UserContextProvider({ children }: any) {
         }
     }
 
-    return <UserContext.Provider value={{ user, setUser }}>
+    return <UserContext.Provider value={{ user, setUser, loading }}>
         {children}
     </UserContext.Provider>
 }
