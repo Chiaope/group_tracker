@@ -1,12 +1,13 @@
 import { View, Text, TouchableOpacity } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { useContext, useEffect, useState } from "react"
-import { categoryList, useScheduleExpense } from "@/app/Services/ExpenseServices"
+import { useScheduleExpense } from "@/app/Services/ExpenseServices"
 import { CustomNumberInput, CustomTextInput, CustomDropDown } from "../Components/CustomInputs"
 import { useNavigation } from "@react-navigation/native"
 import { ScheduledExpenseData } from "../Components/ScheduledExpenseListItem"
 import { useShowToast } from "../Components/CustomToast"
 import { UserContext } from "../Context/UserContext"
+import { useCategoryService } from "../Services/CategoryServices"
 
 function generateDateFromMonthYearString(monthYearString: any, separator: string = '-') {
     let splittedMonthYear = monthYearString.split(separator)
@@ -29,6 +30,11 @@ export default function ScheduleExpenseForm({ route }: any) {
     const [selectedDate, setSelectedDate] = useState<null | Date>()
     const navigation = useNavigation<any>();
     const { addedScheduledExpense } = route.params;
+    const categoryServices = useCategoryService()
+
+    useEffect(() => {
+        categoryServices.getMappedCategoryList()
+    }, [user.selectedGroup])
 
     useEffect(() => {
         if (!scheduleExpenseService.loading) {
@@ -136,7 +142,7 @@ export default function ScheduleExpenseForm({ route }: any) {
                                         placeholder="Category"
                                         value={value}
                                         searchable={true}
-                                        items={categoryList}
+                                        items={categoryServices.mappedCategoryList}
                                         open={open}
                                         setOpen={setOpen}
                                         onSelectItem={(value: { value: any }) => {

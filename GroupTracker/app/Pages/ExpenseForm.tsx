@@ -2,12 +2,12 @@ import { View, Text, TouchableOpacity } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { ExpenseData } from "../Services/ExpenseServices"
 import { useContext, useEffect, useState } from "react"
-import { categoryList, useAddExpense } from "@/app/Services/ExpenseServices"
+import { useAddExpense } from "@/app/Services/ExpenseServices"
 import { CustomNumberInput, CustomTextInput, CustomDropDown } from "../Components/CustomInputs"
 import { useNavigation } from "@react-navigation/native"
 import { useShowToast } from "../Components/CustomToast"
 import { UserContext } from "../Context/UserContext"
-
+import { useCategoryService } from "../Services/CategoryServices"
 
 export default function ExpenseForm({ route }: any) {
     const { user } = useContext(UserContext)
@@ -21,6 +21,11 @@ export default function ExpenseForm({ route }: any) {
     const toast = useShowToast()
     const navigation = useNavigation<any>();
     const { addedExpense } = route.params;
+    const categoryServices = useCategoryService()
+
+    useEffect(() => {
+        categoryServices.getMappedCategoryList()
+    }, [user.selectedGroup])
 
     useEffect(() => {
         if (!addExpenseService.loading) {
@@ -125,7 +130,7 @@ export default function ExpenseForm({ route }: any) {
                                         placeholder="Category"
                                         value={value}
                                         searchable={true}
-                                        items={categoryList}
+                                        items={categoryServices.mappedCategoryList}
                                         open={open}
                                         setOpen={setOpen}
                                         onSelectItem={(value: { value: any }) => {

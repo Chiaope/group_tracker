@@ -40,17 +40,6 @@ export interface ExpenseData {
     description: undefined | string;
 }
 
-const categoryList = [
-    { label: 'Food', value: 'food' },
-    { label: 'House', value: 'house' },
-    { label: 'Health', value: 'health' },
-    { label: 'Eating Out', value: 'eat_out' },
-    { label: 'Entertainment', value: 'entertainment' },
-    { label: 'Vehicle', value: 'vehicle' },
-    { label: 'Transport', value: 'transport' },
-    { label: 'Education', value: 'education' },
-]
-
 function useGetAllExpense() {
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<any>(null)
@@ -301,4 +290,4 @@ function useDeleteScheduledExpense() {
     return { deleteScheduledExpense, loading, scheduledExpenseDeleted, error } as const
 }
 
-export { useGetAllExpense, useAddExpense, useDeleteExpense, useGetAllScheduledExpense, useScheduleExpense, useDeleteScheduledExpense, categoryList }
+export { useGetAllExpense, useAddExpense, useDeleteExpense, useGetAllScheduledExpense, useScheduleExpense, useDeleteScheduledExpense }
