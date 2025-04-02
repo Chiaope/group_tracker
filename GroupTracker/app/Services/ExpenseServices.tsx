@@ -30,13 +30,14 @@ if (env == 'local') {
 }
 
 export interface ExpenseData {
-    id: number;
-    created_at: string;
-    created_by: string;
-    amount_cents: number;
-    group_id: number;
-    title: string;
-    category: string;
+    id: number,
+    created_at: string,
+    created_by: string,
+    username: string,
+    amount_cents: number,
+    group_id: number,
+    title: string,
+    category: string,
     description: undefined | string;
 }
 

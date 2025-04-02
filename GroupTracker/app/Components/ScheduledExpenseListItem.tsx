@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import isoToDateTimeString from "../Utils/isoToDateTimeString";
 
 interface Props {
     scheduledExpenseData: ScheduledExpenseData
@@ -10,6 +11,7 @@ export interface ScheduledExpenseData {
     id: number,
     created_at: string,
     created_by: string,
+    username: string,
     amount_cents: number,
     group_id: number,
     title: string,
@@ -99,16 +101,22 @@ export default function ScheduledExpenseListItem({ scheduledExpenseData, deleteF
                     <View>
                         <View style={styles.additionalDetails}>
                             <Text>
-                                Created by: {scheduledExpenseData.created_by}
+                                <b>Title:</b> {scheduledExpenseData.title}
                             </Text>
                             <Text>
-                                Created: {scheduledExpenseData.created_at}
+                                <b>Amount:</b> ${(scheduledExpenseData.amount_cents / 100).toFixed(2)}
                             </Text>
                             <Text>
-                                Category: {scheduledExpenseData.category}
+                                <b>Created by:</b> {scheduledExpenseData.username}
                             </Text>
                             <Text>
-                                End Date: {scheduledExpenseData.end_date || "No End Date"}
+                                <b>Created at:</b> {isoToDateTimeString(scheduledExpenseData.created_at)}
+                            </Text>
+                            <Text>
+                                <b>Category:</b> {scheduledExpenseData.category}
+                            </Text>
+                            <Text>
+                                <b>End Date:</b> {scheduledExpenseData.end_date || "No End Date"}
                             </Text>
                         </View>
                         <TouchableOpacity onPress={() => { onDeletePressed(scheduledExpenseData.id) }}>

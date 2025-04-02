@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { ExpenseData } from "../Services/ExpenseServices";
+import isoToDateTimeString from "../Utils/isoToDateTimeString";
 
 interface Props {
     expenseData: ExpenseData
@@ -89,16 +90,22 @@ export default function ExpenseListItem({ expenseData, deleteFunction }: Props) 
                     <View>
                         <View style={styles.additionalDetails}>
                             <Text>
-                                Created by: {expenseData.created_by}
+                                <b>Title:</b> {expenseData.title}
                             </Text>
                             <Text>
-                                Created: {expenseData.created_at}
+                                <b>Amount:</b> ${(expenseData.amount_cents / 100).toFixed(2)}
                             </Text>
                             <Text>
-                                Category: {expenseData.category}
+                                <b>Created by:</b> {expenseData.username}
                             </Text>
                             <Text>
-                                Description: {expenseData.description || "No Descriptions"}
+                                <b>Created at:</b> {isoToDateTimeString(expenseData.created_at)}
+                            </Text>
+                            <Text>
+                                <b>Category:</b> {expenseData.category}
+                            </Text>
+                            <Text>
+                                <b>Description:</b> {expenseData.description || "No Descriptions"}
                             </Text>
                         </View>
                         <TouchableOpacity onPress={() => { onDeletePressed(expenseData.id) }}>
