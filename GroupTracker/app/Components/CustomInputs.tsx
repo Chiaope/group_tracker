@@ -14,7 +14,7 @@ export function CustomNumberInput(props: any) {
             placeholderTextColor={'black'}
             {...props}
             value={props.value}
-            keyboardType="numeric"
+            keyboardType="number-pad"
         />
     )
 }

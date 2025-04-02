@@ -51,5 +51,4 @@ function useCategoryService() {
     }
     return { getMappedCategoryList, mappedCategoryList, loading, error } as const
 }
-
 export { useCategoryService }
