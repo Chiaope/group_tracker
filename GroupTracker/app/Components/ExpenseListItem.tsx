@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { ExpenseData } from "../Services/ExpenseServices";
 import isoToDateTimeString from "../Utils/isoToDateTimeString";
+import B from "../Utils/B";
 
 interface Props {
     expenseData: ExpenseData
@@ -90,22 +91,22 @@ export default function ExpenseListItem({ expenseData, deleteFunction }: Props) 
                     <View>
                         <View style={styles.additionalDetails}>
                             <Text>
-                                Title: {expenseData.title}
+                                <B>Title:</B> {expenseData.title}
                             </Text>
                             <Text>
-                                Amount: ${(expenseData.amount_cents / 100).toFixed(2)}
+                                <B>Amount:</B> ${(expenseData.amount_cents / 100).toFixed(2)}
                             </Text>
                             <Text>
-                                Created by: {expenseData.username}
+                                <B>Created by:</B> {expenseData.username}
                             </Text>
                             <Text>
-                                Created at: {isoToDateTimeString(expenseData.created_at)}
+                                <B>Created at:</B> {isoToDateTimeString(expenseData.created_at)}
                             </Text>
                             <Text>
-                                Category: {expenseData.category}
+                                <B>Category:</B> {expenseData.category}
                             </Text>
                             <Text>
-                                Description: {expenseData.description || "No Descriptions"}
+                                <B>Description:</B> {expenseData.description || "No Descriptions"}
                             </Text>
                         </View>
                         <TouchableOpacity onPress={() => { onDeletePressed(expenseData.id) }}>
