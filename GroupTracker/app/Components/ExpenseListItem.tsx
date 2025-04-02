@@ -90,22 +90,22 @@ export default function ExpenseListItem({ expenseData, deleteFunction }: Props) 
                     <View>
                         <View style={styles.additionalDetails}>
                             <Text>
-                                <b>Title:</b> {expenseData.title}
+                                Title: {expenseData.title}
                             </Text>
                             <Text>
-                                <b>Amount:</b> ${(expenseData.amount_cents / 100).toFixed(2)}
+                                Amount: ${(expenseData.amount_cents / 100).toFixed(2)}
                             </Text>
                             <Text>
-                                <b>Created by:</b> {expenseData.username}
+                                Created by: {expenseData.username}
                             </Text>
                             <Text>
-                                <b>Created at:</b> {isoToDateTimeString(expenseData.created_at)}
+                                Created at: {isoToDateTimeString(expenseData.created_at)}
                             </Text>
                             <Text>
-                                <b>Category:</b> {expenseData.category}
+                                Category: {expenseData.category}
                             </Text>
                             <Text>
-                                <b>Description:</b> {expenseData.description || "No Descriptions"}
+                                Description: {expenseData.description || "No Descriptions"}
                             </Text>
                         </View>
                         <TouchableOpacity onPress={() => { onDeletePressed(expenseData.id) }}>

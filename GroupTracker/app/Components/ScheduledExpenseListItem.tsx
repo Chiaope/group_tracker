@@ -101,22 +101,22 @@ export default function ScheduledExpenseListItem({ scheduledExpenseData, deleteF
                     <View>
                         <View style={styles.additionalDetails}>
                             <Text>
-                                <b>Title:</b> {scheduledExpenseData.title}
+                                Title: {scheduledExpenseData.title}
                             </Text>
                             <Text>
-                                <b>Amount:</b> ${(scheduledExpenseData.amount_cents / 100).toFixed(2)}
+                                Amount: ${(scheduledExpenseData.amount_cents / 100).toFixed(2)}
                             </Text>
                             <Text>
-                                <b>Created by:</b> {scheduledExpenseData.username}
+                                Created by: {scheduledExpenseData.username}
                             </Text>
                             <Text>
-                                <b>Created at:</b> {isoToDateTimeString(scheduledExpenseData.created_at)}
+                                Created at: {isoToDateTimeString(scheduledExpenseData.created_at)}
                             </Text>
                             <Text>
-                                <b>Category:</b> {scheduledExpenseData.category}
+                                Category: {scheduledExpenseData.category}
                             </Text>
                             <Text>
-                                <b>End Date:</b> {scheduledExpenseData.end_date || "No End Date"}
+                                End Date: {scheduledExpenseData.end_date || "No End Date"}
                             </Text>
                         </View>
                         <TouchableOpacity onPress={() => { onDeletePressed(scheduledExpenseData.id) }}>
