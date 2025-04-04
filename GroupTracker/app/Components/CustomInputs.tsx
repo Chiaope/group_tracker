@@ -14,7 +14,8 @@ export function CustomNumberInput(props: any) {
             placeholderTextColor={'black'}
             {...props}
             value={props.value}
-            keyboardType="number-pad"
+            // use this in the mean time and create something else in the future
+            keyboardType="numbers-and-punctuation"
         />
     )
 }
