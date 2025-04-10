@@ -59,6 +59,8 @@ function useGetAllExpense() {
                 console.log("date str info")
                 console.log(startDateStr)
                 console.log(endDateStr)
+                console.log('selected_group')
+                console.log(selected_group)
                 allExpenseResponse = await supabase.rpc(getAllExpenseSQLFunction, { 'selected_group': selected_group, 'start_date': startDateStr, 'end_date': endDateStr })
             } else {
                 console.log(getAllExpenseSQLFunction)

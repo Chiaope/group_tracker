@@ -33,7 +33,7 @@ export default function Auth() {
             toast.showToast("error", error.message)
         } else {
             toast.showToast("success", "Logged In")
-            router.navigate('/(Pages)/Home')
+            router.navigate('/(HomeDrawer)/(ExpenseTab)/ExpensePage')
         }
         setLoading(false)
     }
@@ -49,7 +49,12 @@ export default function Auth() {
         })
 
         if (error) toast.showToast('error', error.message)
-        if (!session) toast.showToast('error', 'Please check your inbox for email verification!')
+        setLoading(false)
+        if (session) {
+            router.navigate('/(HomeDrawer)/(ExpenseTab)/ExpensePage')
+        } else {
+            toast.showToast('error', 'Something wrong with signing up.')
+        }
         setLoading(false)
     }
 
