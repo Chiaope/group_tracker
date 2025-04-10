@@ -2,12 +2,12 @@ import { View, Text, TouchableOpacity } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { useContext, useEffect, useState } from "react"
 import { useScheduleExpense } from "@/app/Services/ExpenseServices"
-import { CustomNumberInput, CustomTextInput, CustomDropDown } from "../Components/CustomInputs"
 import { useNavigation } from "@react-navigation/native"
-import { ScheduledExpenseData } from "../Components/ScheduledExpenseListItem"
-import { useShowToast } from "../Components/CustomToast"
-import { UserContext } from "../Context/UserContext"
-import { useCategoryService } from "../Services/CategoryServices"
+import { UserContext } from "@/app/Context/UserContext"
+import { CustomNumberInput, CustomTextInput, CustomDropDown } from "@/app/Components/CustomInputs"
+import { useShowToast } from "@/app/Components/CustomToast"
+import { ScheduledExpenseData } from "@/app/Components/ScheduledExpenseListItem"
+import { useCategoryService } from "@/app/Services/CategoryServices"
 
 function generateDateFromMonthYearString(monthYearString: any, separator: string = '-') {
     let splittedMonthYear = monthYearString.split(separator)
@@ -17,20 +17,31 @@ function generateDateFromMonthYearString(monthYearString: any, separator: string
 }
 
 
-export default function ScheduleExpenseForm({ route }: any) {
+export default function ScheduleExpenseForm() {
     const { user } = useContext(UserContext)
     const {
+        reset,
         control,
         handleSubmit,
         formState: { errors },
-    } = useForm<ScheduledExpenseData>({})
+    } = useForm<ScheduledExpenseData>({defaultValues: {
+        // @ts-ignore
+        amount_cents: '',
+        category: '',
+        end_date: '',
+        title: ''
+    }})
     const [open, setOpen] = useState(false)
     const scheduleExpenseService = useScheduleExpense()
     const toast = useShowToast()
     const [selectedDate, setSelectedDate] = useState<null | Date>()
     const navigation = useNavigation<any>();
-    const { addedScheduledExpense } = route.params;
     const categoryServices = useCategoryService()
+
+    function handleGoBack(){
+        reset()
+        navigation.goBack()
+    }
 
     useEffect(() => {
         categoryServices.getMappedCategoryList()
@@ -46,8 +57,7 @@ export default function ScheduleExpenseForm({ route }: any) {
                 if (scheduleExpenseService.scheduled) {
                     console.log('Scheduled successfully')
                     selectedDate && toast.showToast("success", `Expense will be added on every 3rd of the month until last payment on ${selectedDate.toISOString().split('T')[0]}.`)
-                    addedScheduledExpense(true)
-                    navigation.goBack()
+                    handleGoBack()
                 }
             }
         }
@@ -62,7 +72,7 @@ export default function ScheduleExpenseForm({ route }: any) {
     }
 
     function onCancel() {
-        navigation.goBack()
+        handleGoBack()
     }
 
     return (

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { StyleSheet, View, AppState, TextInput, Button } from 'react-native'
 import { supabase } from '../Utils/supabase'
 import { useShowToast } from '../Components/CustomToast';
+import { router } from 'expo-router';
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -32,6 +33,7 @@ export default function Auth() {
             toast.showToast("error", error.message)
         } else {
             toast.showToast("success", "Logged In")
+            router.navigate('/(Pages)/Home')
         }
         setLoading(false)
     }

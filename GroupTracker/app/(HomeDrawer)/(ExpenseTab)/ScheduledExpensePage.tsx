@@ -1,10 +1,10 @@
 import { Button, FlatList, View, Text, RefreshControl } from "react-native"
-import ScheduledExpenseListItem from "../Components/ScheduledExpenseListItem"
 import { useDeleteScheduledExpense, useGetAllScheduledExpense } from "@/app/Services/ExpenseServices"
-import { useNavigation } from "@react-navigation/native"
 import { useCallback, useContext, useEffect, useState } from "react"
-import { useShowToast } from "../Components/CustomToast"
-import { UserContext } from "../Context/UserContext"
+import { UserContext } from "@/app/Context/UserContext"
+import { useShowToast } from "@/app/Components/CustomToast"
+import ScheduledExpenseListItem from "@/app/Components/ScheduledExpenseListItem"
+import { router, useFocusEffect } from "expo-router"
 
 export default function ScheduledExpensePage() {
     console.log("~~~~~ Scheduled Expense Page ~~~~~")
@@ -15,6 +15,10 @@ export default function ScheduledExpensePage() {
     const [addedScheduledExpense, setAddedScheduledExpense] = useState(false)
 
     let monthlyRecurringExpense = getAllScheduledExpenseService.allScheduledExpense.reduce((accumulator, current) => accumulator + current.amount_cents, 0)
+
+    useFocusEffect(useCallback(() => {
+        getAllScheduledExpenseService.getAllScheduledExpense(user.selectedGroup)
+    }, []))
 
     useEffect(() => {
         getAllScheduledExpenseService.getAllScheduledExpense(user.selectedGroup)
@@ -45,13 +49,10 @@ export default function ScheduledExpensePage() {
         await deleteScheduledExpenseService.deleteScheduledExpense(id)
     }, []);
 
-
-    const navigation = useNavigation<any>();
-
     function addButtonPressed() {
         console.log('add button pressed')
         setAddedScheduledExpense(false)
-        navigation.navigate('Schedule Expense Form', { 'addedScheduledExpense': setAddedScheduledExpense })
+        router.navigate("/(Pages)/ScheduleExpenseForm")
     }
 
 

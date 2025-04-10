@@ -1,27 +1,37 @@
 import { View, Text, TouchableOpacity } from "react-native"
 import { useForm, Controller } from "react-hook-form"
-import { ExpenseData } from "../Services/ExpenseServices"
 import { useContext, useEffect, useState } from "react"
-import { useAddExpense } from "@/app/Services/ExpenseServices"
-import { CustomNumberInput, CustomTextInput, CustomDropDown } from "../Components/CustomInputs"
+import { ExpenseData, useAddExpense } from "@/app/Services/ExpenseServices"
+import { UserContext } from "@/app/Context/UserContext"
+import { CustomNumberInput, CustomTextInput, CustomDropDown } from "@/app/Components/CustomInputs"
+import { useShowToast } from "@/app/Components/CustomToast"
+import { useCategoryService } from "@/app/Services/CategoryServices"
 import { useNavigation } from "@react-navigation/native"
-import { useShowToast } from "../Components/CustomToast"
-import { UserContext } from "../Context/UserContext"
-import { useCategoryService } from "../Services/CategoryServices"
 
-export default function ExpenseForm({ route }: any) {
+export default function ExpenseForm() {
     const { user } = useContext(UserContext)
     const {
+        reset,
         control,
         handleSubmit,
         formState: { errors },
-    } = useForm<ExpenseData>({})
+    } = useForm<ExpenseData>({defaultValues: {
+        // @ts-ignore
+        amount_cents: '',
+        category: '',
+        description: '',
+        title: ''
+    }})
     const [open, setOpen] = useState(false)
     const addExpenseService = useAddExpense()
     const toast = useShowToast()
     const navigation = useNavigation<any>();
-    const { addedExpense } = route.params;
     const categoryServices = useCategoryService()
+
+    function handleGoBack(){
+        reset()
+        navigation.goBack()
+    }
 
     useEffect(() => {
         categoryServices.getMappedCategoryList()
@@ -37,7 +47,6 @@ export default function ExpenseForm({ route }: any) {
                 if (addExpenseService.inserted) {
                     console.log('Inserted successfully')
                     toast.showToast("success", "Successfully inserted expense.")
-                    addedExpense(true)
                     navigation.goBack()
                 }
             }
@@ -52,7 +61,8 @@ export default function ExpenseForm({ route }: any) {
     }
 
     function onCancel() {
-        navigation.goBack()
+        // navigation.goBack()
+        handleGoBack()
     }
 
     return (

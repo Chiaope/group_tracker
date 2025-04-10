@@ -1,11 +1,11 @@
 import { Button, FlatList, View, Text, RefreshControl, TouchableOpacity } from "react-native"
-import ExpenseListItem from "../Components/ExpenseListItem"
 import { useDeleteExpense, useGetAllExpense } from "@/app/Services/ExpenseServices"
-import { useNavigation } from "@react-navigation/native"
 import { useCallback, useContext, useEffect, useState } from "react"
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useShowToast } from "../Components/CustomToast"
-import { UserContext } from "../Context/UserContext"
+import { UserContext } from "@/app/Context/UserContext";
+import { useShowToast } from "@/app/Components/CustomToast";
+import ExpenseListItem from "@/app/Components/ExpenseListItem";
+import { router, useFocusEffect } from "expo-router";
 
 export default function ExpensePage() {
     console.log("~~~~~ Expense Page ~~~~~")
@@ -18,6 +18,13 @@ export default function ExpensePage() {
 
     const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "short" };
     let formattedDate = new Intl.DateTimeFormat('en-US', options).format(selectedDate);
+
+    useFocusEffect(useCallback(() => {
+        let refDate = new Date(selectedDate)
+        let startDate = new Date(refDate.setDate(1))
+        let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth() + 1, 1))
+        getAllExpenseService.getAllExpense(user.selectedGroup, startDate, endDate)
+    }, []))
 
     useEffect(() => {
         let refDate = new Date(selectedDate)
@@ -56,12 +63,11 @@ export default function ExpensePage() {
     }, []);
 
 
-    const navigation = useNavigation<any>();
-
     function addButtonPressed() {
         console.log('add button pressed')
         setAddedExpense(false)
-        navigation.navigate('Expense Form', { 'addedExpense': setAddedExpense })
+        router.navigate("/(Pages)/ExpenseForm")
+        
     }
 
     function prevMonthPressed() {
