@@ -1,8 +1,12 @@
 import { useState } from 'react'
-import { StyleSheet, View, AppState, TextInput, Button } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { View, AppState, Image, ActivityIndicator, Keyboard } from 'react-native'
 import { supabase } from '../Utils/supabase'
 import { useShowToast } from '../Components/CustomToast';
 import { router } from 'expo-router';
+import { Text } from 'react-native';
+import { CustomTextInputWithIcon } from '../Components/CustomInputs';
+import { APP_CONSTANTS } from '../Globals/GlobalConstants'
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -17,87 +21,87 @@ AppState.addEventListener('change', (state) => {
 })
 
 export default function Auth() {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [token, setToken] = useState<string>('')
+    const [email, setEmail] = useState<string>('')
     const [loading, setLoading] = useState(false)
+    const [showTokenInput, setShowTokenInput] = useState<boolean>(false)
     const toast = useShowToast()
 
-    async function signInWithEmail() {
+    async function signInWithOTP() {
+        Keyboard.dismiss()
         setLoading(true)
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithOtp({
             email: email,
-            password: password,
+        })
+        if (error) {
+            toast.showToast("error", 'Something wrong with getting token.')
+        } else {
+            toast.showToast("success", "Please provide token to login.")
+            setShowTokenInput(true)
+        }
+        setLoading(false)
+    }
+
+    async function verifyOtp() {
+        Keyboard.dismiss()
+        setLoading(true)
+        const { data: { session }, error, } = await supabase.auth.verifyOtp({
+            email,
+            token: token,
+            type: 'email',
         })
 
         if (error) {
             toast.showToast("error", error.message)
         } else {
             toast.showToast("success", "Logged In")
-            router.navigate('/(HomeDrawer)/(ExpenseTab)/ExpensePage')
+            router.navigate('/')
         }
         setLoading(false)
     }
+    const imagePath = require("../../assets/images/astronaut-sitting.png")
 
-    async function signUpWithEmail() {
-        setLoading(true)
-        const {
-            data: { session },
-            error,
-        } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-        })
-
-        if (error) toast.showToast('error', error.message)
-        setLoading(false)
-        if (session) {
-            router.navigate('/(HomeDrawer)/(ExpenseTab)/ExpensePage')
-        } else {
-            toast.showToast('error', 'Something wrong with signing up.')
-        }
-        setLoading(false)
-    }
-
-    return (
-        <View style={styles.container}>
-            <View style={[styles.verticallySpaced, styles.mt20]}>
-                <TextInput
-                    onChangeText={(text) => setEmail(text)}
-                    value={email}
-                    placeholder="email@address.com"
-                    autoCapitalize={'none'}
+    return <KeyboardAwareScrollView keyboardShouldPersistTaps='handled' keyboardDismissMode='interactive'>
+        {loading && <View style={{ padding: 25, position: 'absolute', top: 0, left: 0, right: 0 }}>
+            <ActivityIndicator size="large" color="#0000ff" />
+        </View>}
+        <View style={{ alignItems: 'center', marginTop: 50 }}>
+            <View style={{ borderRadius: 30, padding: 10, borderWidth: 5, borderColor: '#333333' }}>
+                <Text style={{ fontSize: 42, color: '#333333' }}>{APP_CONSTANTS.APP_NAME}</Text>
+            </View>
+            <Image
+                source={imagePath}
+                style={{
+                    height: 300,
+                    width: 300
+                }}
+            />
+            <View style={{ alignItems: 'center', gap: 10 }}>
+                <CustomTextInputWithIcon
+                    textProps={{
+                        onChangeText: (text: string) => setEmail(text),
+                        value: email,
+                        placeholder: "space-cadet@address.com",
+                        autoCapitalize: 'none',
+                        style: { flex: 1, marginHorizontal: 10 }
+                    }}
+                    iconTouchProps={{ onPress: () => signInWithOTP() }}
+                    iconStyleProps={{ name: 'arrow-right' }}
                 />
-            </View>
-            <View style={styles.verticallySpaced}>
-                <TextInput
-                    onChangeText={(text) => setPassword(text)}
-                    value={password}
-                    secureTextEntry={true}
-                    placeholder="Password"
-                    autoCapitalize={'none'}
-                />
-            </View>
-            <View style={[styles.verticallySpaced, styles.mt20]}>
-                <Button title="Sign in" disabled={loading} onPress={() => signInWithEmail()} />
-            </View>
-            <View style={styles.verticallySpaced}>
-                <Button title="Sign up" disabled={loading} onPress={() => signUpWithEmail()} />
+                {showTokenInput && <>
+                    <CustomTextInputWithIcon
+                        textProps={{
+                            onChangeText: (text: string) => setToken(text),
+                            value: token,
+                            placeholder: "token",
+                            autoCapitalize: 'none',
+                            style: { flex: 1, marginHorizontal: 10 }
+                        }}
+                        iconTouchProps={{ onPress: () => verifyOtp() }}
+                        iconStyleProps={{ name: 'rocket' }}
+                    />
+                </>}
             </View>
         </View>
-    )
+    </KeyboardAwareScrollView>
 }
-
-const styles = StyleSheet.create({
-    container: {
-        marginTop: 40,
-        padding: 12,
-    },
-    verticallySpaced: {
-        paddingTop: 4,
-        paddingBottom: 4,
-        alignSelf: 'stretch',
-    },
-    mt20: {
-        marginTop: 20,
-    },
-})
