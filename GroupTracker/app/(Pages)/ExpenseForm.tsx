@@ -7,6 +7,7 @@ import { CustomNumberInput, CustomTextInput, CustomDropDown } from "@/app/Compon
 import { useShowToast } from "@/app/Components/CustomToast"
 import { useCategoryService } from "@/app/Services/CategoryServices"
 import { useNavigation } from "@react-navigation/native"
+import { COLORS } from "../Globals/GlobalConstants"
 
 export default function ExpenseForm() {
     const { user } = useContext(UserContext)
@@ -15,20 +16,22 @@ export default function ExpenseForm() {
         control,
         handleSubmit,
         formState: { errors },
-    } = useForm<ExpenseData>({defaultValues: {
-        // @ts-ignore
-        amount_cents: '',
-        category: '',
-        description: '',
-        title: ''
-    }})
+    } = useForm<ExpenseData>({
+        defaultValues: {
+            // @ts-ignore
+            amount_cents: '',
+            category: '',
+            description: '',
+            title: ''
+        }
+    })
     const [open, setOpen] = useState(false)
     const addExpenseService = useAddExpense()
     const toast = useShowToast()
     const navigation = useNavigation<any>();
     const categoryServices = useCategoryService()
 
-    function handleGoBack(){
+    function handleGoBack() {
         reset()
         navigation.goBack()
     }
@@ -61,7 +64,6 @@ export default function ExpenseForm() {
     }
 
     function onCancel() {
-        // navigation.goBack()
         handleGoBack()
     }
 
@@ -172,7 +174,7 @@ export default function ExpenseForm() {
                         <TouchableOpacity style={{
                             flex: 1,
                             padding: 10,
-                            backgroundColor: 'red',
+                            backgroundColor: COLORS.RED,
                             borderRadius: 10
                         }}
                             onPress={onCancel}>

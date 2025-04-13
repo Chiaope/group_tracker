@@ -1,10 +1,11 @@
-import { Button, FlatList, View, Text, RefreshControl } from "react-native"
+import { Button, FlatList, View, Text, RefreshControl, ActivityIndicator } from "react-native"
 import { useDeleteScheduledExpense, useGetAllScheduledExpense } from "@/app/Services/ExpenseServices"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { UserContext } from "@/app/Context/UserContext"
 import { useShowToast } from "@/app/Components/CustomToast"
 import ScheduledExpenseListItem from "@/app/Components/ScheduledExpenseListItem"
 import { router, useFocusEffect } from "expo-router"
+import { COLORS } from "@/app/Globals/GlobalConstants"
 
 export default function ScheduledExpensePage() {
     console.log("~~~~~ Scheduled Expense Page ~~~~~")
@@ -63,8 +64,8 @@ export default function ScheduledExpensePage() {
 
     return (
         <>
-            {getAllScheduledExpenseService.loading ? <View>
-                <Text>Loading</Text>
+            {getAllScheduledExpenseService.loading ? <View style={{ padding: 25, position: 'absolute', top: 0, left: 0, right: 0 }}>
+                <ActivityIndicator size="large" color={COLORS.SPINNER} />
             </View> :
                 (
                     getAllScheduledExpenseService.error ?

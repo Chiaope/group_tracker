@@ -1,4 +1,4 @@
-import { Button, FlatList, View, Text, RefreshControl, TouchableOpacity } from "react-native"
+import { Button, FlatList, View, Text, RefreshControl, TouchableOpacity, ActivityIndicator } from "react-native"
 import { useDeleteExpense, useGetAllExpense } from "@/app/Services/ExpenseServices"
 import { useCallback, useContext, useEffect, useState } from "react"
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -6,6 +6,7 @@ import { UserContext } from "@/app/Context/UserContext";
 import { useShowToast } from "@/app/Components/CustomToast";
 import ExpenseListItem from "@/app/Components/ExpenseListItem";
 import { router, useFocusEffect } from "expo-router";
+import { COLORS } from "@/app/Globals/GlobalConstants";
 
 export default function ExpensePage() {
     console.log("~~~~~ Expense Page ~~~~~")
@@ -67,7 +68,7 @@ export default function ExpensePage() {
         console.log('add button pressed')
         setAddedExpense(false)
         router.navigate("/(Pages)/ExpenseForm")
-        
+
     }
 
     function prevMonthPressed() {
@@ -89,8 +90,8 @@ export default function ExpensePage() {
 
     return (
         <>
-            {getAllExpenseService.loading ? <View>
-                <Text>Loading</Text>
+            {getAllExpenseService.loading ? <View style={{ padding: 25, position: 'absolute', top: 0, left: 0, right: 0 }}>
+                <ActivityIndicator size="large" color={COLORS.SPINNER} />
             </View> :
                 (
                     getAllExpenseService.error ?

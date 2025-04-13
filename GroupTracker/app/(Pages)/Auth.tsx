@@ -6,7 +6,7 @@ import { useShowToast } from '../Components/CustomToast';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
 import { CustomTextInputWithIcon } from '../Components/CustomInputs';
-import { APP_CONSTANTS } from '../Globals/GlobalConstants'
+import { APP_CONSTANTS, COLORS } from '../Globals/GlobalConstants'
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -63,7 +63,7 @@ export default function Auth() {
 
     return <KeyboardAwareScrollView keyboardShouldPersistTaps='handled' keyboardDismissMode='interactive'>
         {loading && <View style={{ padding: 25, position: 'absolute', top: 0, left: 0, right: 0 }}>
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color={COLORS.SPINNER} />
         </View>}
         <View style={{ alignItems: 'center', marginTop: 50 }}>
             <View style={{ borderRadius: 30, padding: 10, borderWidth: 5, borderColor: '#333333' }}>

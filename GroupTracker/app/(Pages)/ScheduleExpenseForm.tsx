@@ -8,6 +8,7 @@ import { CustomNumberInput, CustomTextInput, CustomDropDown } from "@/app/Compon
 import { useShowToast } from "@/app/Components/CustomToast"
 import { ScheduledExpenseData } from "@/app/Components/ScheduledExpenseListItem"
 import { useCategoryService } from "@/app/Services/CategoryServices"
+import { COLORS } from "../Globals/GlobalConstants"
 
 function generateDateFromMonthYearString(monthYearString: any, separator: string = '-') {
     let splittedMonthYear = monthYearString.split(separator)
@@ -24,13 +25,15 @@ export default function ScheduleExpenseForm() {
         control,
         handleSubmit,
         formState: { errors },
-    } = useForm<ScheduledExpenseData>({defaultValues: {
-        // @ts-ignore
-        amount_cents: '',
-        category: '',
-        end_date: '',
-        title: ''
-    }})
+    } = useForm<ScheduledExpenseData>({
+        defaultValues: {
+            // @ts-ignore
+            amount_cents: '',
+            category: '',
+            end_date: '',
+            title: ''
+        }
+    })
     const [open, setOpen] = useState(false)
     const scheduleExpenseService = useScheduleExpense()
     const toast = useShowToast()
@@ -38,7 +41,7 @@ export default function ScheduleExpenseForm() {
     const navigation = useNavigation<any>();
     const categoryServices = useCategoryService()
 
-    function handleGoBack(){
+    function handleGoBack() {
         reset()
         navigation.goBack()
     }
@@ -214,7 +217,7 @@ export default function ScheduleExpenseForm() {
                         <TouchableOpacity style={{
                             flex: 1,
                             padding: 10,
-                            backgroundColor: 'red',
+                            backgroundColor: COLORS.RED,
                             borderRadius: 10
                         }}
                             onPress={onCancel}>

@@ -1,4 +1,3 @@
-import { Text } from 'react-native';
 import { CustomDropDown } from './CustomInputs';
 import { useContext, useState } from 'react';
 import { UserGroupData } from '../Services/UserServices';
@@ -8,11 +7,9 @@ export default function GroupSelection() {
     const [open, setOpen] = useState(false)
     const { user, setUser } = useContext(UserContext)
 
-    return (<>
-        <Text>Group:</Text>
+    return <>
         <CustomDropDown
             value={user.selectedGroup}
-            searchable={true}
             items={user.userGroupData.map((groupData: UserGroupData) => { return { 'label': groupData.group_name, 'value': groupData.group_id } })}
             open={open}
             setOpen={setOpen}
@@ -20,6 +17,5 @@ export default function GroupSelection() {
                 setUser({ ...user, 'selectedGroup': value.value })
             }}
         />
-    </>)
-
+    </>
 }

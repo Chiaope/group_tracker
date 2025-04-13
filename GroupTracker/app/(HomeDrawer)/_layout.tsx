@@ -8,9 +8,14 @@ import { TouchableOpacity, View, Text, Button } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import { supabase } from '../Utils/supabase';
+import { COLORS } from '../Globals/GlobalConstants';
 
 export default function HomeDrawerLayout() {
     const { user } = useContext(UserContext)
+
+    function manageGroupPress() {
+        router.navigate("/(HomeDrawer)/(GroupsTab)/InviteGroup")
+    }
 
     async function signOut() {
         await supabase.auth.signOut()
@@ -22,18 +27,35 @@ export default function HomeDrawerLayout() {
 
         return (
             <DrawerContentScrollView {...props}>
-                <GroupSelection />
-                {user?.username &&
-                    <View style={{ padding: 20 }}>
-                        <TouchableOpacity style={{ gap: 5 }}>
-                            <Text>User:</Text>
-                            <Text>{user?.username}</Text>
-                        </TouchableOpacity>
-                    </View>}
+                <View style={{ gap: 20, paddingTop: 20 }}>
+                    {user?.username &&
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ fontSize: 20 }}>{user?.username}</Text>
+                        </View>}
+                    <GroupSelection />
+                    <TouchableOpacity
+                        style={{
+                            borderWidth: 1,
+                            padding: 10,
+                            borderRadius: 10
+                        }}
+                        onPress={manageGroupPress}
+                    >
+                        <Text>Manage Groups</Text>
+                    </TouchableOpacity>
+                    {/* hide drawer items
                 <View style={{ padding: 5 }}>
                     <DrawerItemList {...props} />
+                </View> */}
+                    <TouchableOpacity style={{
+                        padding: 10,
+                        borderRadius: 10,
+                        backgroundColor: COLORS.RED,
+                        alignItems: 'center'
+                    }} onPress={signOut}>
+                        <Text>Sign Out</Text>
+                    </TouchableOpacity>
                 </View>
-                <Button onPress={signOut} title='Sign Out' />
             </DrawerContentScrollView>
         );
     };
@@ -43,6 +65,10 @@ export default function HomeDrawerLayout() {
                 <Drawer.Screen name="(ExpenseTab)" options={{
                     drawerLabel: 'Expenses',
                     headerTitle: 'Expenses',
+                }} />
+                <Drawer.Screen name="(GroupsTab)" options={{
+                    drawerLabel: 'Groups',
+                    headerTitle: 'Groups',
                 }} />
             </Drawer>
         </GestureHandlerRootView>
