@@ -38,18 +38,19 @@ const decryptCompactData = (encryptedString: string, secretKey: string): any => 
   return JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
 };
 
-const encryptVeryCompact = (data: { groupId: number }, secret: string): string => {
+const generateInviteToken = (data: { groupId: number }, secret: string): string => {
   // Simple XOR "encryption" - not cryptographically secure!
   const num = data.groupId;
   const key = parseInt(CryptoJS.MD5(secret).toString().substring(0, 8), 16) || 0xDEADBEEF;
   const encryptedNum = (num ^ key).toString(36); // Base36 encoding
-  return encryptedNum;
+  return 's' + encryptedNum + 'c';
 };
 
-const decryptVeryCompact = (code: string, secret: string): { groupId: number } => {
+const decodeInviteToken = (code: string, secret: string): { groupId: number } => {
   const key = parseInt(CryptoJS.MD5(secret).toString().substring(0, 8), 16) || 0xDEADBEEF;
+  code = code.substring(1, code.length-1)
   const num = parseInt(code, 36) ^ key;
   return { groupId: num };
 };
 
-export { encryptCompactData, decryptCompactData, encryptVeryCompact, decryptVeryCompact }
+export { encryptCompactData, decryptCompactData, generateInviteToken, decodeInviteToken }

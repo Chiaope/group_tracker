@@ -2,11 +2,13 @@ import { CustomDropDown } from "@/app/Components/CustomInputs"
 import { UserContext } from "@/app/Context/UserContext"
 import { COLORS } from "@/app/Globals/GlobalConstants"
 import { UserGroupData } from "@/app/Services/UserServices"
-import { encryptVeryCompact } from "@/app/Utils/Encryption"
+import { generateInviteToken } from "@/app/Utils/Encryption"
 import { useContext, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import Icon from "react-native-vector-icons/FontAwesome6"
 import * as Clipboard from 'expo-clipboard';
+
+const inviteSecretKey = process.env.EXPO_PUBLIC_INVITE_SECRET_KEY || ""
 
 export default function InviteGroup() {
     const { user } = useContext(UserContext)
@@ -14,11 +16,11 @@ export default function InviteGroup() {
     const [selectedGroup, setSelectedGroup] = useState<number>()
     const [inviteToken, setInviteToken] = useState<string>()
 
-    function generateInviteToken() {
-        selectedGroup && setInviteToken(encryptVeryCompact({ groupId: selectedGroup }, 'abc'))
+    function getInviteToken() {
+        selectedGroup && setInviteToken(generateInviteToken({ groupId: selectedGroup }, inviteSecretKey))
     }
 
-    async function copyInviteToken(){
+    async function copyInviteToken() {
         inviteToken && await Clipboard.setStringAsync(inviteToken);
     }
 
@@ -26,18 +28,16 @@ export default function InviteGroup() {
         <View style={{ alignItems: 'center' }}>
             <Text style={{ fontSize: 30 }}>Invite Group</Text>
         </View>
-        <View>
-            <CustomDropDown
-                value={selectedGroup}
-                items={user.userGroupData.map((groupData: UserGroupData) => { return { 'label': groupData.group_name, 'value': groupData.group_id } })}
-                open={open}
-                setOpen={setOpen}
-                onSelectItem={(value: { value: any }) => {
-                    setSelectedGroup(value.value)
-                }}
-            />
-        </View>
-        <TouchableOpacity onPress={generateInviteToken}
+        <CustomDropDown
+            value={selectedGroup}
+            items={user.userGroupData.map((groupData: UserGroupData) => { return { 'label': groupData.group_name, 'value': groupData.group_id } })}
+            open={open}
+            setOpen={setOpen}
+            onSelectItem={(value: { value: any }) => {
+                setSelectedGroup(value.value)
+            }}
+        />
+        <TouchableOpacity onPress={getInviteToken}
             style={{
                 justifyContent: "center",
                 alignItems: "center",

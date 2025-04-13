@@ -13,7 +13,11 @@ import { COLORS } from '../Globals/GlobalConstants';
 export default function HomeDrawerLayout() {
     const { user } = useContext(UserContext)
 
-    function manageGroupPress() {
+    function expensesPressed() {
+        router.navigate("/(HomeDrawer)/(ExpenseTab)/ExpensePage")
+    }
+
+    function manageGroupPressed() {
         router.navigate("/(HomeDrawer)/(GroupsTab)/InviteGroup")
     }
 
@@ -39,7 +43,17 @@ export default function HomeDrawerLayout() {
                             padding: 10,
                             borderRadius: 10
                         }}
-                        onPress={manageGroupPress}
+                        onPress={expensesPressed}
+                    >
+                        <Text>Expenses</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{
+                            borderWidth: 1,
+                            padding: 10,
+                            borderRadius: 10
+                        }}
+                        onPress={manageGroupPressed}
                     >
                         <Text>Manage Groups</Text>
                     </TouchableOpacity>

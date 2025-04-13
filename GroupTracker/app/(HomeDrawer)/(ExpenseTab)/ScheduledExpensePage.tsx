@@ -19,7 +19,7 @@ export default function ScheduledExpensePage() {
 
     useFocusEffect(useCallback(() => {
         getAllScheduledExpenseService.getAllScheduledExpense(user.selectedGroup)
-    }, []))
+    }, [user]))
 
     useEffect(() => {
         getAllScheduledExpenseService.getAllScheduledExpense(user.selectedGroup)
@@ -43,7 +43,7 @@ export default function ScheduledExpensePage() {
 
     const onRefresh = useCallback(() => {
         getAllScheduledExpenseService.getAllScheduledExpense(user.selectedGroup)
-    }, []);
+    }, [user]);
 
 
     const deleteScheduledExpenseFunction = useCallback(async (id: number) => {

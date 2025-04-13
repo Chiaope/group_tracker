@@ -25,7 +25,7 @@ export default function ExpensePage() {
         let startDate = new Date(refDate.setDate(1))
         let endDate = new Date(refDate.setFullYear(refDate.getFullYear(), refDate.getMonth() + 1, 1))
         getAllExpenseService.getAllExpense(user.selectedGroup, startDate, endDate)
-    }, []))
+    }, [user]))
 
     useEffect(() => {
         let refDate = new Date(selectedDate)
@@ -68,7 +68,7 @@ export default function ExpensePage() {
         console.log('add button pressed')
         setAddedExpense(false)
         router.navigate("/(Pages)/ExpenseForm")
-
+        
     }
 
     function prevMonthPressed() {
@@ -91,8 +91,8 @@ export default function ExpensePage() {
     return (
         <>
             {getAllExpenseService.loading ? <View style={{ padding: 25, position: 'absolute', top: 0, left: 0, right: 0 }}>
-                <ActivityIndicator size="large" color={COLORS.SPINNER} />
-            </View> :
+                  <ActivityIndicator size="large" color={COLORS.SPINNER} />
+                </View> :
                 (
                     getAllExpenseService.error ?
                         <Text>{getAllExpenseService.error.error.message}</Text> :

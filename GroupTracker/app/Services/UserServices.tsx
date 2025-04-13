@@ -1,19 +1,23 @@
-import { useCallback, useState } from "react"
+import { useCallback, useContext, useState } from "react"
 import { supabase } from "../Utils/supabase"
+import { UserContext } from "../Context/UserContext"
 
 
 const env = process.env.EXPO_PUBLIC_ENV || ""
 
 let getUserGroupInfoSQLFunction: string
 let getUserInfoSQLFunction: string
+let joinGroupSQLFunction: string
 
 
 if (env == 'local') {
     getUserGroupInfoSQLFunction = 'get_user_group_info'
     getUserInfoSQLFunction = 'get_user_info'
+    joinGroupSQLFunction = 'join_group'
 } else {
     getUserGroupInfoSQLFunction = 'get_user_group_info'
     getUserInfoSQLFunction = 'get_user_info'
+    joinGroupSQLFunction = 'join_group'
 }
 
 
@@ -105,4 +109,46 @@ function useGetUserData() {
     return { getUserData, loading, userData, error } as const
 }
 
-export { useGetUserGroupData, useGetUserData }
+function useJoinGroup() {
+    const [loading, setLoading] = useState<any>(false)
+    const [joined, setJoined] = useState(false)
+    const [error, setError] = useState<any>(null)
+    const { user, refreshData } = useContext(UserContext)
+
+    async function joinGroup(groupId: number) {
+        console.log('Joining Group')
+        console.log(groupId)
+        try {
+            setJoined(false)
+            setLoading(true)
+            setError(null)
+            const joinGroupData = { user_id_input: user.id, group_id_input: groupId }
+            const joinGroupResponse = await supabase.rpc(joinGroupSQLFunction, joinGroupData)
+            console.log(joinGroupResponse.data)
+            if (joinGroupResponse.error) {
+                console.log('Join Group error:')
+                console.log(joinGroupResponse.error.message)
+                console.log(joinGroupResponse.status)
+                console.log(joinGroupResponse.statusText)
+                setError(
+                    {
+                        "error": joinGroupResponse.error,
+                        "status": joinGroupResponse.status,
+                        "statusText": joinGroupResponse.statusText
+                    }
+                )
+                throw joinGroupResponse.error
+            } else {
+                await new Promise(r => setTimeout(r, 3000));
+                setJoined(true)
+                refreshData()
+            }
+        } catch (error: any) { } finally {
+            setLoading(false)
+        }
+    }
+    return { joinGroup, loading, joined, error } as const
+}
+
+
+export { useGetUserGroupData, useGetUserData, useJoinGroup }
