@@ -36,7 +36,6 @@ export default function UserContextProvider({ children }: any) {
 
     useEffect(() => {
         console.log('Updating user info')
-        toast.showToast("error", "dudeeeee")
         if (session?.user?.id && userGroupData && userData) {
             console.log('this is user data')
             console.log(userData)
