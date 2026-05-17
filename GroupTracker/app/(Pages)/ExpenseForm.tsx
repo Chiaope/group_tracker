@@ -1,13 +1,13 @@
 import { View, Text, TouchableOpacity } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { useContext, useEffect, useState } from "react"
-import { ExpenseData, useAddExpense } from "@/app/Services/ExpenseServices"
-import { UserContext } from "@/app/Context/UserContext"
-import { CustomNumberInput, CustomTextInput, CustomDropDown } from "@/app/Components/CustomInputs"
-import { useShowToast } from "@/app/Components/CustomToast"
-import { useCategoryService } from "@/app/Services/CategoryServices"
+import { ExpenseData, useAddExpense } from "@/Services/ExpenseServices"
+import { UserContext } from "@/Context/UserContext"
+import { CustomNumberInput, CustomTextInput, CustomDropDown } from "@/CustomComponents/CustomInputs"
+import { useShowToast } from "@/CustomComponents/CustomToast"
+import { useCategoryService } from "@/Services/CategoryServices"
 import { useNavigation } from "@react-navigation/native"
-import { COLORS } from "../Globals/GlobalConstants"
+import { COLORS } from "@/Globals/GlobalConstants"
 
 export default function ExpenseForm() {
     const { user } = useContext(UserContext)

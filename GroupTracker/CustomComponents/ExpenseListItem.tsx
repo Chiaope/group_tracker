@@ -1,30 +1,19 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import isoToDateTimeString from "../Utils/isoToDateTimeString";
-import B from "../Utils/B";
+import { ExpenseData } from "@/Services/ExpenseServices";
+import isoToDateTimeString from "@/Utils/isoToDateTimeString";
+import B from "@/Utils/B";
 
 interface Props {
-    scheduledExpenseData: ScheduledExpenseData
+    expenseData: ExpenseData
     deleteFunction: any
 }
 
-export interface ScheduledExpenseData {
-    id: number,
-    created_at: string,
-    created_by: string,
-    username: string,
-    amount_cents: number,
-    group_id: number,
-    title: string,
-    category: string,
-    end_date: undefined | string
-}
-
-export default function ScheduledExpenseListItem({ scheduledExpenseData, deleteFunction }: Props) {
+export default function ExpenseListItem({ expenseData, deleteFunction }: Props) {
     const [collapse, setCollapse] = useState<boolean>(false)
 
     function onExpensePress() {
-        console.log('Scheduled Expense Pressed')
+        console.log('Expense Pressed')
         setCollapse(!collapse)
     }
 
@@ -37,7 +26,7 @@ export default function ScheduledExpenseListItem({ scheduledExpenseData, deleteF
             alignItems: 'center',
         },
         touchable: {
-            width: '100%'
+            width: '100%',
         },
         baseButton: {
             padding: 10,
@@ -55,7 +44,7 @@ export default function ScheduledExpenseListItem({ scheduledExpenseData, deleteF
             backgroundColor: 'red'
         },
         positiveButton: {
-            backgroundColor: 'lightblue',
+            backgroundColor: 'green',
         },
         buttonText: {
             textAlign: 'center',
@@ -79,7 +68,7 @@ export default function ScheduledExpenseListItem({ scheduledExpenseData, deleteF
     });
 
     var StyledButton
-    if (scheduledExpenseData.amount_cents > 0) {
+    if (expenseData.amount_cents > 0) {
         StyledButton = [styles.baseButton, styles.positiveButton]
     } else {
         StyledButton = [styles.baseButton, styles.negativeButton]
@@ -91,10 +80,10 @@ export default function ScheduledExpenseListItem({ scheduledExpenseData, deleteF
             <TouchableOpacity onPress={onExpensePress} style={styles.touchable}>
                 <View style={StyledButton}>
                     <Text style={styles.buttonText}>
-                        {scheduledExpenseData.title}
+                        {expenseData.title}
                     </Text>
                     <Text style={styles.buttonText}>
-                        ${(scheduledExpenseData.amount_cents / 100).toFixed(2)}
+                        ${(expenseData.amount_cents / 100).toFixed(2)}
                     </Text>
                 </View>
                 {
@@ -102,25 +91,25 @@ export default function ScheduledExpenseListItem({ scheduledExpenseData, deleteF
                     <View>
                         <View style={styles.additionalDetails}>
                             <Text>
-                                <B>Title:</B> {scheduledExpenseData.title}
+                                <B>Title:</B> {expenseData.title}
                             </Text>
                             <Text>
-                                <B>Amount:</B> ${(scheduledExpenseData.amount_cents / 100).toFixed(2)}
+                                <B>Amount:</B> ${(expenseData.amount_cents / 100).toFixed(2)}
                             </Text>
                             <Text>
-                                <B>Created by:</B> {scheduledExpenseData.username}
+                                <B>Created by:</B> {expenseData.username}
                             </Text>
                             <Text>
-                                <B>Created at:</B> {isoToDateTimeString(scheduledExpenseData.created_at)}
+                                <B>Created at:</B> {isoToDateTimeString(expenseData.created_at)}
                             </Text>
                             <Text>
-                                <B>Category:</B> {scheduledExpenseData.category}
+                                <B>Category:</B> {expenseData.category}
                             </Text>
                             <Text>
-                                <B>End Date:</B> {scheduledExpenseData.end_date || "No End Date"}
+                                <B>Description:</B> {expenseData.description || "No Descriptions"}
                             </Text>
                         </View>
-                        <TouchableOpacity onPress={() => { onDeletePressed(scheduledExpenseData.id) }}>
+                        <TouchableOpacity onPress={() => { onDeletePressed(expenseData.id) }}>
                             <View style={styles.deleteButton}>
                                 <Text style={styles.deleteButtonText}>
                                     DELETE

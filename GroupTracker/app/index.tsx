@@ -1,11 +1,11 @@
 import "@/global.css";
 
-import { UserContext } from "./Context/UserContext";
+import { UserContext } from "@/Context/UserContext";
 import Auth from "./(Pages)/Auth";
 import { useContext, useEffect } from "react";
 import { router } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
-import { COLORS } from "./Globals/GlobalConstants";
+import { COLORS } from "@/Globals/GlobalConstants";
 
 export default function Root() {
   const { user, loading } = useContext(UserContext)

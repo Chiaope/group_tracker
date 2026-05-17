@@ -1,14 +1,14 @@
 import 'react-native-gesture-handler'
 import { Drawer } from "expo-router/drawer";
 import { useContext } from "react";
-import { UserContext } from "../Context/UserContext";
+import { UserContext } from "@/Context/UserContext";
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
-import GroupSelection from "../Components/GroupSelection";
+import GroupSelection from "@/CustomComponents/GroupSelection";
 import { TouchableOpacity, View, Text, Button } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
-import { supabase } from '../Utils/supabase';
-import { COLORS } from '../Globals/GlobalConstants';
+import { supabase } from '@/Utils/supabase';
+import { COLORS } from '@/Globals/GlobalConstants';
 
 export default function HomeDrawerLayout() {
     const { user } = useContext(UserContext)
@@ -31,7 +31,7 @@ export default function HomeDrawerLayout() {
 
         return (
             <DrawerContentScrollView {...props}>
-                <View style={{ gap: 20, paddingTop: 20 }}>
+                <View style={{ flex: 1, gap: 20, paddingTop: 20 }}>
                     {user?.username &&
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={{ fontSize: 20 }}>{user?.username}</Text>

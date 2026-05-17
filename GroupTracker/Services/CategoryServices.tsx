@@ -1,6 +1,6 @@
 import { useContext, useState } from "react"
-import { supabase } from "../Utils/supabase"
-import { UserContext } from "../Context/UserContext"
+import { supabase } from "@/Utils/supabase"
+import { UserContext } from "@/Context/UserContext"
 
 const getCategoryListSQLFunction = 'get_category_list'
 

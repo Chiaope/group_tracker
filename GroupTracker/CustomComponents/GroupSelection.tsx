@@ -1,7 +1,7 @@
 import { CustomDropDown } from './CustomInputs';
 import { useContext, useState } from 'react';
-import { UserGroupData } from '../Services/UserServices';
-import { UserContext } from '../Context/UserContext';
+import { UserGroupData } from '@/Services/UserServices';
+import { UserContext } from '@/Context/UserContext';
 
 export default function GroupSelection() {
     const [open, setOpen] = useState(false)

@@ -1,7 +1,7 @@
 import { Keyboard, TextInput, TouchableOpacity, View } from "react-native"
 import DropDownPicker from "react-native-dropdown-picker"
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { COLORS } from "../Globals/GlobalConstants";
+import { COLORS } from "@/Globals/GlobalConstants";
 
 export function CustomNumberInput(props: any) {
     let color = props.error ? COLORS.RED : COLORS.INPUT_BACKGROUND

@@ -1,14 +1,14 @@
 import { View, Text, TouchableOpacity } from "react-native"
 import { useForm, Controller } from "react-hook-form"
 import { useContext, useEffect, useState } from "react"
-import { useScheduleExpense } from "@/app/Services/ExpenseServices"
+import { useScheduleExpense } from "@/Services/ExpenseServices"
 import { useNavigation } from "@react-navigation/native"
-import { UserContext } from "@/app/Context/UserContext"
-import { CustomNumberInput, CustomTextInput, CustomDropDown } from "@/app/Components/CustomInputs"
-import { useShowToast } from "@/app/Components/CustomToast"
-import { ScheduledExpenseData } from "@/app/Components/ScheduledExpenseListItem"
-import { useCategoryService } from "@/app/Services/CategoryServices"
-import { COLORS } from "../Globals/GlobalConstants"
+import { UserContext } from "@/Context/UserContext"
+import { CustomNumberInput, CustomTextInput, CustomDropDown } from "@/CustomComponents/CustomInputs"
+import { useShowToast } from "@/CustomComponents/CustomToast"
+import { ScheduledExpenseData } from "@/CustomComponents/ScheduledExpenseListItem"
+import { useCategoryService } from "@/Services/CategoryServices"
+import { COLORS } from "@/Globals/GlobalConstants"
 
 function generateDateFromMonthYearString(monthYearString: any, separator: string = '-') {
     let splittedMonthYear = monthYearString.split(separator)

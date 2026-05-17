@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from "react"
-import { supabase } from "../Utils/supabase";
-import { ScheduledExpenseData } from "../Components/ScheduledExpenseListItem";
-import { UserContext } from "../Context/UserContext";
+import { supabase } from "@/Utils/supabase";
+import { ScheduledExpenseData } from "@/CustomComponents/ScheduledExpenseListItem";
+import { UserContext } from "@/Context/UserContext";
 
 
 const env = process.env.EXPO_PUBLIC_ENV || ""

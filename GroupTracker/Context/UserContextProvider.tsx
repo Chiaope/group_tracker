@@ -1,10 +1,9 @@
-import { createContext, useEffect, useState } from 'react';
-import { supabase } from '../Utils/supabase';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/Utils/supabase';
 import { Session } from '@supabase/supabase-js';
-import { useShowToast } from '../Components/CustomToast';
-import { useGetUserData, useGetUserGroupData } from '../Services/UserServices';
-
-export const UserContext = createContext<any>({});
+import { useShowToast } from '@/CustomComponents/CustomToast';
+import { useGetUserData, useGetUserGroupData } from '@/Services/UserServices';
+import { UserContext } from './UserContext';
 
 export default function UserContextProvider({ children }: any) {
     const [loading, setLoading] = useState(true)
@@ -37,6 +36,7 @@ export default function UserContextProvider({ children }: any) {
 
     useEffect(() => {
         console.log('Updating user info')
+        toast.showToast("error", "dudeeeee")
         if (session?.user?.id && userGroupData && userData) {
             console.log('this is user data')
             console.log(userData)

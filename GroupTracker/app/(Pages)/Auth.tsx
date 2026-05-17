@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { View, AppState, Image, ActivityIndicator, Keyboard } from 'react-native'
-import { supabase } from '../Utils/supabase'
-import { useShowToast } from '../Components/CustomToast';
+import { supabase } from '@/Utils/supabase'
+import { useShowToast } from '@/CustomComponents/CustomToast';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
-import { CustomTextInputWithIcon } from '../Components/CustomInputs';
-import { APP_CONSTANTS, COLORS } from '../Globals/GlobalConstants'
+import { CustomTextInputWithIcon } from '@/CustomComponents/CustomInputs';
+import { APP_CONSTANTS, COLORS } from '@/Globals/GlobalConstants'
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
