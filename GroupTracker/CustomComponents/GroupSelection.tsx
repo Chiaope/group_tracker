@@ -7,6 +7,10 @@ export default function GroupSelection() {
     const [open, setOpen] = useState(false)
     const { user, setUser } = useContext(UserContext)
 
+    if (!user || !user.userGroupData) {
+        return <div>Loading groups...</div>; // Or return null;
+    }
+
     return <>
         <CustomDropDown
             value={user.selectedGroup}
