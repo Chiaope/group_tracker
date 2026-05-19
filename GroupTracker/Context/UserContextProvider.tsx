@@ -45,7 +45,7 @@ export default function UserContextProvider({ children }: any) {
                 'userGroupData': userGroupData
             }
             if (userGroupData.length > 0) {
-                updatedUserData = { ...updatedUserData, 'selectedGroup': userGroupData[0].group_id }
+                updatedUserData = { ...updatedUserData, 'selectedGroup': userData.default_group_id || userGroupData[0].group_id }
             }
             setUser(updatedUserData)
         }

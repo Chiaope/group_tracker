@@ -20,6 +20,12 @@ export default function GroupSelection() {
             onSelectItem={(value: { value: any }) => {
                 setUser({ ...user, 'selectedGroup': value.value })
             }}
+            style={{
+                borderColor: 'black',
+            }}
+            dropDownContainerStyle={{
+                borderColor: 'black',
+            }}
         />
     </>
 }

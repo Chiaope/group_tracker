@@ -1,6 +1,6 @@
 import { CustomDropDown } from "@/CustomComponents/CustomInputs"
 import { COLORS } from "@/Globals/GlobalConstants"
-import { useGetAdminGroups, Group } from "@/Services/UserServices"
+import { useGetUserAdminGroups, Group } from "@/Services/UserServices"
 import { generateInviteToken } from "@/Utils/Encryption"
 import { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
@@ -10,13 +10,13 @@ import * as Clipboard from 'expo-clipboard';
 const inviteSecretKey = process.env.EXPO_PUBLIC_INVITE_SECRET_KEY || ""
 
 export default function InviteGroup() {
-    const getAdminGroupsService = useGetAdminGroups()
+    const getUserAdminGroupsService = useGetUserAdminGroups()
     const [open, setOpen] = useState(false)
     const [selectedGroup, setSelectedGroup] = useState<number>()
     const [inviteToken, setInviteToken] = useState<string>()
 
     useEffect(() => {
-        getAdminGroupsService.getAdminGroups()
+        getUserAdminGroupsService.getUserAdminGroups()
 
     }, [])
 
@@ -34,7 +34,7 @@ export default function InviteGroup() {
         </View>
         <CustomDropDown
             value={selectedGroup}
-            items={getAdminGroupsService.adminGroups.map((adminGroupData: Group) => { return { 'label': adminGroupData.group_name, 'value': adminGroupData.id } })}
+            items={getUserAdminGroupsService.adminGroups.map((adminGroupData: Group) => { return { 'label': adminGroupData.group_name, 'value': adminGroupData.id } })}
             open={open}
             setOpen={setOpen}
             onSelectItem={(value: { value: any }) => {

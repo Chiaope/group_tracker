@@ -1,7 +1,7 @@
 import { CustomTextInput } from "@/CustomComponents/CustomInputs"
 import { useShowToast } from "@/CustomComponents/CustomToast"
 import { COLORS } from "@/Globals/GlobalConstants"
-import { useJoinGroup } from "@/Services/UserServices"
+import { useJoinGroup } from "@/Services/GroupServices"
 import { decodeInviteToken } from "@/Utils/Encryption"
 import { router } from "expo-router"
 import { useEffect, useState } from "react"

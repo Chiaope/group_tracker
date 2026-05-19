@@ -7,20 +7,17 @@ const env = process.env.EXPO_PUBLIC_ENV || ""
 
 let getUserGroupInfoSQLFunction: string
 let getUserInfoSQLFunction: string
-let joinGroupSQLFunction: string
-let getAdminGroupsSQLFunction: string
+let getUserAdminGroupsSQLFunction: string
 
 
 if (env == 'local') {
     getUserGroupInfoSQLFunction = 'get_user_group_info'
     getUserInfoSQLFunction = 'get_user_info'
-    joinGroupSQLFunction = 'join_group'
-    getAdminGroupsSQLFunction = 'get_admin_groups'
+    getUserAdminGroupsSQLFunction = 'get_admin_groups'
 } else {
     getUserGroupInfoSQLFunction = 'get_user_group_info'
     getUserInfoSQLFunction = 'get_user_info'
-    joinGroupSQLFunction = 'join_group'
-    getAdminGroupsSQLFunction = 'get_admin_groups'
+    getUserAdminGroupsSQLFunction = 'get_admin_groups'
 }
 
 
@@ -34,11 +31,12 @@ export interface UserGroupData {
 export interface UserData {
     id: string,
     username: string,
-    email: string
+    email: string,
+    default_group_id: number
 }
 
 export interface Group {
-    id: number,
+    group_id: number,
     created_at: string,
     group_name: string,
     group_admin: string
@@ -118,84 +116,43 @@ function useGetUserData() {
     return { getUserData, loading, userData, error } as const
 }
 
-function useJoinGroup() {
-    const [loading, setLoading] = useState<any>(false)
-    const [joined, setJoined] = useState(false)
-    const [error, setError] = useState<any>(null)
-    const { user, refreshData } = useContext(UserContext)
-
-    async function joinGroup(groupId: number) {
-        console.log('Joining Group')
-        console.log(groupId)
-        try {
-            setJoined(false)
-            setLoading(true)
-            setError(null)
-            const joinGroupData = { user_id_input: user.id, group_id_input: groupId }
-            const joinGroupResponse = await supabase.rpc(joinGroupSQLFunction, joinGroupData)
-            console.log(joinGroupResponse.data)
-            if (joinGroupResponse.error) {
-                console.log('Join Group error:')
-                console.log(joinGroupResponse.error.message)
-                console.log(joinGroupResponse.status)
-                console.log(joinGroupResponse.statusText)
-                setError(
-                    {
-                        "error": joinGroupResponse.error,
-                        "status": joinGroupResponse.status,
-                        "statusText": joinGroupResponse.statusText
-                    }
-                )
-                throw joinGroupResponse.error
-            } else {
-                await new Promise(r => setTimeout(r, 3000));
-                setJoined(true)
-                refreshData()
-            }
-        } catch (error: any) { } finally {
-            setLoading(false)
-        }
-    }
-    return { joinGroup, loading, joined, error } as const
-}
-
-function useGetAdminGroups() {
+function useGetUserAdminGroups() {
     const [loading, setLoading] = useState<any>(false)
     const [adminGroups, setAdminGroups] = useState([])
     const [error, setError] = useState<any>(null)
     const { user } = useContext(UserContext)
 
-    async function getAdminGroups() {
+    async function getUserAdminGroups() {
         console.log('Getting Admin Groups')
         try {
             setAdminGroups([])
             setLoading(true)
             setError(null)
             const userData = { user_id_input: user.id }
-            const getAdminGroupsResponse = await supabase.rpc(getAdminGroupsSQLFunction, userData)
-            console.log(getAdminGroupsResponse.data)
-            if (getAdminGroupsResponse.error) {
+            const getUserAdminGroupsResponse = await supabase.rpc(getUserAdminGroupsSQLFunction, userData)
+            console.log(getUserAdminGroupsResponse.data)
+            if (getUserAdminGroupsResponse.error) {
                 console.log('Get Admin Groups error:')
-                console.log(getAdminGroupsResponse.error.message)
-                console.log(getAdminGroupsResponse.status)
-                console.log(getAdminGroupsResponse.statusText)
+                console.log(getUserAdminGroupsResponse.error.message)
+                console.log(getUserAdminGroupsResponse.status)
+                console.log(getUserAdminGroupsResponse.statusText)
                 setError(
                     {
-                        "error": getAdminGroupsResponse.error,
-                        "status": getAdminGroupsResponse.status,
-                        "statusText": getAdminGroupsResponse.statusText
+                        "error": getUserAdminGroupsResponse.error,
+                        "status": getUserAdminGroupsResponse.status,
+                        "statusText": getUserAdminGroupsResponse.statusText
                     }
                 )
-                throw getAdminGroupsResponse.error
-            } else if (getAdminGroupsResponse.data) {
-                setAdminGroups(getAdminGroupsResponse.data)
+                throw getUserAdminGroupsResponse.error
+            } else if (getUserAdminGroupsResponse.data) {
+                setAdminGroups(getUserAdminGroupsResponse.data)
             }
         } catch (error: any) { } finally {
             setLoading(false)
         }
     }
-    return { getAdminGroups, loading, adminGroups, error } as const
+    return { getUserAdminGroups, loading, adminGroups, error } as const
 }
 
 
-export { useGetUserGroupData, useGetUserData, useJoinGroup, useGetAdminGroups }
+export { useGetUserGroupData, useGetUserData, useGetUserAdminGroups }

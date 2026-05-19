@@ -17,7 +17,8 @@ export function CustomNumberInput(props: any) {
             ...mainStyleProps
         }}>
             <TextInput
-                style={{ flex: 1, marginHorizontal: 10 }}
+                style={{ flex: 1, marginHorizontal: 10, outlineStyle: 'none' }}
+                underlineColorAndroid="transparent"
                 placeholderTextColor={'black'}
                 {...props}
                 value={props.value}
@@ -42,7 +43,8 @@ export function CustomTextInput(props: any) {
             ...mainStyleProps
         }}>
             <TextInput
-                style={{ flex: 1, marginHorizontal: 10 }}
+                style={{ flex: 1, marginHorizontal: 10, outlineStyle: 'none' }}
+                underlineColorAndroid="transparent"
                 placeholderTextColor={'black'}
                 {...props}
             />
@@ -51,15 +53,20 @@ export function CustomTextInput(props: any) {
 }
 
 export function CustomDropDown(props: any) {
-    let color = props.error ? 'red' : 'black'
+    let borderColor = props.open ? 'transparent' : (props.error ? 'red' : 'transparent');
     return (
         <DropDownPicker
             style={{
-                borderColor: color,
-                backgroundColor: 'transparent'
+                borderColor: borderColor,
+            }}  
+            dropDownContainerStyle={{
+                borderColor: borderColor,
             }}
             dropDownDirection="BOTTOM"
             onPress={Keyboard.dismiss}
+            modalProps={{
+                animationType: "fade" // Optional: makes it look a bit smoother
+            }}
             {...props}
         />
     )
@@ -85,7 +92,8 @@ export function CustomTextInputWithIcon(props: any) {
         {...mainContainerProps}
     >
         <TextInput
-            style={{ flex: 1, marginHorizontal: 10 }}
+            style={{ flex: 1, marginHorizontal: 10, outlineStyle: 'none' }}
+            underlineColorAndroid="transparent"
             {...textProps}
         />
         <TouchableOpacity

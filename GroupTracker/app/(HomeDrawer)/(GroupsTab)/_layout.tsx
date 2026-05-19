@@ -4,6 +4,14 @@ import { View } from 'react-native';
 
 export default function ExpenseTabLayout() {
     return <Tabs screenOptions={{ headerShown: false }}>
+        <Tabs.Screen name='EditGroup' options={{
+            tabBarIcon: () => {
+                return <View style={{ flex: 1 }}>
+                    <Icon name='user-pen' size={25} />
+                </View>
+            },
+            tabBarLabel: 'Edit'
+        }} />
         <Tabs.Screen name='InviteGroup' options={{
             tabBarIcon: () => {
                 return <View style={{ flex: 1 }}>

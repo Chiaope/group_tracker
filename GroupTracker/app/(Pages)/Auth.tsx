@@ -83,7 +83,6 @@ export default function Auth() {
                         value: email,
                         placeholder: "space-cadet@address.com",
                         autoCapitalize: 'none',
-                        style: { flex: 1, marginHorizontal: 10 }
                     }}
                     iconTouchProps={{ onPress: () => signInWithOTP() }}
                     iconStyleProps={{ name: 'arrow-right' }}
@@ -95,7 +94,6 @@ export default function Auth() {
                             value: token,
                             placeholder: "token",
                             autoCapitalize: 'none',
-                            style: { flex: 1, marginHorizontal: 10 }
                         }}
                         iconTouchProps={{ onPress: () => verifyOtp() }}
                         iconStyleProps={{ name: 'rocket' }}

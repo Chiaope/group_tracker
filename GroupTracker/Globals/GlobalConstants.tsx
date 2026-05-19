@@ -3,7 +3,7 @@ export const APP_CONSTANTS = {
 }
 
 export const COLORS = {
-    INPUT_BACKGROUND: '#dadada',
+    INPUT_BACKGROUND: '#ffffff',
     SPINNER: '#4273fa',
     RED: '#ff5c5c',
     LIGHT_GREEN: '#43ff91'
